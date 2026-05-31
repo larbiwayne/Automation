@@ -1,0 +1,1026 @@
+# Before reading this, make sure to understand that this guide was created from this prompt for Claude:
+
+# Alright Claude,
+
+# I've read your TikTok automation guide and I'm ready to start building the system.
+
+# I want you to create a detailed, step-by-step roadmap that takes me from zero to publishing my first automated TikTok video.
+
+# My constraints and preferences are:
+
+# Total budget: approximately $25/month.
+
+# I am willing to publish videos manually to avoid triggering platform audits or automation-related restrictions.
+
+# Prioritize the highest ROI tools and workflows within this budget.
+
+# Focus on systems that can scale later without requiring a complete rebuild.
+
+# Whenever there are multiple options, recommend the one you believe offers the best balance between cost, quality, and growth potential.
+
+# Before creating the roadmap, ask me any questions you need in order to make the best decisions (niche, content style, AI tools, hardware, language, target audience, etc.).
+
+# Once you have enough information, I want you to provide:
+
+# 1. The complete software stack.
+
+# 2. Monthly cost breakdown.
+
+# 3. Step-by-step setup instructions.
+
+# 4. Content research workflow.
+
+# 5. Script generation workflow.
+
+# 6. Voice generation workflow.
+
+# 7. Video generation/editing workflow.
+
+# 8. Thumbnail/cover workflow.
+
+# 9. Quality-control checklist.
+
+# 10. Publishing workflow.
+
+# 11. Scaling strategy from 1 video/day to 10+ videos/day.
+
+# 12. Common mistakes to avoid.
+
+# 13. Backup alternatives if a tool becomes too expensive or unavailable.
+
+# Assume I am building this from scratch and want the most efficient path to publishing the first video as quickly as possible while keeping costs around $25/month.
+
+# TikTok Cinematic Story Automation Roadmap
+**Zero → First Published Video · $25/month Budget · GTX 1050 Ti**
+
+> Profile: English · Cinematic AI short stories · Teen+ audience · Faceless · Manual publish · Maximum automation
+
+---
+
+## Quick-start timeline
+
+| Day | Goal |
+|-----|------|
+| 1 | Install all tools, create accounts, set up folder structure |
+| 2 | Write first script + generate voiceover |
+| 3 | Generate images + assemble first video |
+| 4 | Quality check + publish first video manually |
+| 7+ | Automated daily pipeline running |
+
+---
+
+## Section 1 — Complete software stack
+
+### Why this stack for your constraints
+
+Your GTX 1050 Ti has 4GB VRAM. That eliminates local video diffusion models (Wan 2.2 needs 8GB minimum, HunyuanVideo needs 16GB+). The strategy is: run lightweight tasks locally for free, use free-tier cloud APIs for image/video generation, and spend your $25/month only where it produces the biggest quality jump.
+
+### The stack
+
+| Layer | Tool | Where it runs | Cost |
+|-------|------|--------------|------|
+| Script generation | Google Gemini 2.5 Flash | Cloud API | Free tier |
+| Image generation | Pollinations.ai | Cloud API | Free |
+| Image generation (backup/quality) | Google Imagen 4 via Gemini API | Cloud API | Free tier |
+| Video animation (Ken Burns) | FFmpeg | Local (CPU) | Free |
+| AI video clips (optional upgrade) | Kling AI web UI | Cloud | Free tier (limited) |
+| TTS voiceover | Kokoro-82M | Local (CPU) | Free |
+| Voice backup | Google Gemini TTS | Cloud API | Free tier |
+| Subtitle burning | OpenAI Whisper (base model) | Local (CPU) | Free |
+| Video editing / assembly | FFmpeg | Local (CPU) | Free |
+| Background music | Pixabay / FreePD | Download | Free |
+| Orchestration / automation | Python scripts + Task Scheduler | Local | Free |
+| Thumbnail | Canva free tier | Cloud | Free |
+| Publishing | Manual — TikTok app | — | Free |
+| **Paid upgrade (month 1+)** | Fish Audio API (TTS, cloned voice) | Cloud API | ~$11/mo |
+| **Paid upgrade (month 2+)** | Kling AI Pro or Runway Gen-4 credits | Cloud | ~$10–15/mo |
+
+**Total month 1 (free tier only): $0**
+**Total month 2+ (with voice clone + occasional AI video): ~$21–26/month**
+
+---
+
+## Section 2 — Monthly cost breakdown
+
+### Month 1 — Get system running, zero spend
+
+| Item | Cost |
+|------|------|
+| Gemini API (free tier: 1,500 requests/day) | $0 |
+| Pollinations image generation | $0 |
+| Kokoro TTS (local) | $0 |
+| Whisper base (local) | $0 |
+| FFmpeg (local) | $0 |
+| Canva free | $0 |
+| **Total** | **$0** |
+
+### Month 2+ — Quality upgrade within budget
+
+| Item | Cost |
+|------|------|
+| Fish Audio API (voice clone, ~2M chars) | $11/mo |
+| Kling AI Standard plan (AI video clips) | $10/mo |
+| Everything else (same as month 1) | $0 |
+| **Total** | **$21/mo** |
+
+### What you get for that extra $21
+
+- A consistent, cloned branded narrator voice (Fish Audio) → channel identity
+- 120 AI-generated video clips/month (Kling Standard) → cinematic quality
+- Both of these are the highest-ROI upgrades for this niche
+
+---
+
+## Section 3 — Step-by-step setup instructions
+
+### Step 1 — Folder structure
+
+Create this on your PC. Every workflow assumes this structure.
+
+```
+C:\TikTok_Studio\
+├── scripts\          ← generated scripts (.txt)
+├── audio\            ← voiceover files (.wav/.mp3)
+├── images\           ← AI-generated scene images (.png)
+├── video_clips\      ← animated clips per scene (.mp4)
+├── subtitles\        ← .srt subtitle files
+├── music\            ← background music tracks
+├── final\            ← finished 9:16 videos ready to upload
+├── thumbnails\       ← cover images
+├── prompts\          ← saved prompt templates
+└── logs\             ← daily run logs
+```
+
+### Step 2 — Install Python and core tools
+
+1. Download Python 3.11 from python.org (check "Add to PATH" during install)
+2. Open Command Prompt and run:
+```
+pip install google-generativeai requests pillow openai-whisper kokoro
+```
+3. Download FFmpeg static build from ffmpeg.org/download.html
+   - Extract to `C:\ffmpeg\`
+   - Add `C:\ffmpeg\bin` to your Windows PATH environment variable
+   - Verify: open Command Prompt, type `ffmpeg -version` → should show version info
+
+### Step 3 — Get your free API keys
+
+**Google Gemini API (script + image generation):**
+1. Go to aistudio.google.com
+2. Sign in with your Google account
+3. Click "Get API key" → "Create API key"
+4. Copy the key, save it as `GEMINI_KEY` in a text file
+
+**Pollinations (no key needed):**
+- No signup required. You call the API directly. Save the base URL:
+  `https://image.pollinations.ai/prompt/`
+
+**Fish Audio (month 2 — voice clone):**
+1. Go to fish.audio and create a free account
+2. Record or upload 30–60 seconds of a reference voice you have rights to use
+   (or choose from their 2M+ community voice library)
+3. Go to API settings → create an API key
+4. Note your Voice ID for the cloned voice
+
+### Step 4 — Verify FFmpeg is working
+
+Open Command Prompt and run this test:
+```
+ffmpeg -f lavfi -i testsrc=duration=3:size=1080x1920:rate=30 test_output.mp4
+```
+If it creates a file, FFmpeg is correctly installed.
+
+### Step 5 — Test Gemini API
+
+Create a file `test_gemini.py` with:
+```python
+import google.generativeai as genai
+
+genai.configure(api_key="YOUR_KEY_HERE")
+model = genai.GenerativeModel("gemini-2.5-flash")
+response = model.generate_content("Write one sentence about a dragon.")
+print(response.text)
+```
+Run it: `python test_gemini.py` → should print a sentence.
+
+---
+
+## Section 4 — Content research workflow
+
+### Daily research routine (15 minutes, semi-automated)
+
+**Step 1: Find trending story hooks (5 min)**
+
+Check these sources every morning:
+- TikTok search: type your niche keywords (`#aianimation`, `#shortstory`, `#animatedstory`) → sort by "Most Recent" → look at videos with high likes in the last 48h
+- Reddit: r/nosleep, r/shortscarystories, r/WritingPrompts → sort by Hot → top 5 posts give you proven hooks
+- YouTube Shorts trending in your category → hooks that work on Shorts work on TikTok
+
+**Step 2: Extract the pattern, not the content (5 min)**
+
+Don't copy stories. Copy the *structure* of what's working. Ask yourself:
+- What is the hook format? ("I found something in the forest", "Nobody believed him until...")
+- What's the emotional tone? (mysterious, heartwarming, terrifying, inspiring)
+- What visual style are they using?
+
+Log this in a simple spreadsheet: `Date | Hook type | Emotion | Views | Notes`
+
+**Step 3: Generate a topic queue with Gemini (5 min)**
+
+Run this prompt once a week to fill your content queue:
+
+```
+You are a viral TikTok story writer for a cinematic animation channel targeting teens and young adults.
+
+Generate 10 short story CONCEPTS (not full scripts) that:
+- Can be told in 45–60 seconds
+- Have a strong hook in the first 2 seconds
+- Have a clear emotional arc (setup → tension → resolution)
+- Are original, not based on existing IP
+- Work well with AI-generated cinematic visuals
+- Tone options: mysterious, heartwarming, eerie, inspiring, or surprising
+
+For each concept give:
+1. Hook sentence (what opens the video)
+2. Core premise (2 sentences)
+3. Emotional payoff
+4. Suggested visual style (e.g. dark forest, futuristic city, ancient ruins)
+```
+
+Save the 10 concepts to `scripts\queue.txt`. Each day, take one and write the full script.
+
+---
+
+## Section 5 — Script generation workflow
+
+### The cinematic story script structure
+
+Every video follows this exact structure. Internalize it.
+
+```
+[0–3s]   HOOK       — Arresting opening line. No greeting, no setup.
+[3–10s]  WORLD      — Establish setting and character in 1–2 sentences.
+[10–40s] STORY ARC  — Three beats: tension builds → conflict peaks → turn
+[40–52s] RESOLUTION — Emotional payoff. Short. Hits hard.
+[52–60s] LOOP HOOK  — Final line that makes viewers rewatch or comment
+```
+
+Total words: 120–140. At natural speech pace (~140 wpm) this is exactly 50–60 seconds.
+
+### Automated script generation
+
+Save this as `generate_script.py`:
+
+```python
+import google.generativeai as genai
+import sys
+import os
+from datetime import datetime
+
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+model = genai.GenerativeModel("gemini-2.5-flash")
+
+def generate_script(concept: str) -> dict:
+    prompt = f"""
+You are a master cinematic TikTok storyteller. Write a complete short story script based on this concept:
+
+CONCEPT: {concept}
+
+REQUIREMENTS:
+- Total length: exactly 120–140 words
+- Structure: Hook (3s) → World setup (7s) → Story arc with 3 beats (30s) → Resolution (12s) → Loop hook (8s)
+- First sentence is the HOOK — arresting, no preamble, drops the viewer mid-scene
+- No "Hey guys", no "Welcome back", no intro phrases
+- Write for a voiceover narrator — natural spoken rhythm, short sentences
+- Every scene must be visually describable for AI image generation
+- End on a line that makes viewers rewatch or comment
+
+Also provide:
+SCENE_PROMPTS: List of 6 image generation prompts (one per scene), each starting with the visual style.
+VISUAL_STYLE: One consistent art direction phrase (e.g. "dark oil painting, dramatic lighting, cinematic")
+HOOK_LINE: Just the opening sentence isolated
+EMOTIONAL_TONE: One word (mysterious / heartwarming / eerie / inspiring / surprising)
+
+Format your response as:
+SCRIPT:
+[script here]
+
+SCENE_PROMPTS:
+1. [prompt]
+2. [prompt]
+3. [prompt]
+4. [prompt]
+5. [prompt]
+6. [prompt]
+
+VISUAL_STYLE: [style phrase]
+HOOK_LINE: [opening sentence]
+EMOTIONAL_TONE: [one word]
+"""
+    response = model.generate_content(prompt)
+    return parse_script_response(response.text)
+
+def parse_script_response(text: str) -> dict:
+    result = {}
+    sections = ["SCRIPT", "SCENE_PROMPTS", "VISUAL_STYLE", "HOOK_LINE", "EMOTIONAL_TONE"]
+    for i, section in enumerate(sections):
+        start = text.find(f"{section}:")
+        if start == -1:
+            continue
+        start += len(section) + 1
+        next_section = len(text)
+        for other in sections[i+1:]:
+            pos = text.find(f"{other}:")
+            if pos != -1 and pos < next_section:
+                next_section = pos
+        result[section.lower()] = text[start:next_section].strip()
+    return result
+
+if __name__ == "__main__":
+    concept = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else "A lighthouse keeper discovers a message in a bottle that was never thrown into the sea"
+    result = generate_script(concept)
+    
+    date_str = datetime.now().strftime("%Y%m%d_%H%M")
+    filename = f"C:\\TikTok_Studio\\scripts\\script_{date_str}.txt"
+    
+    with open(filename, "w", encoding="utf-8") as f:
+        for key, value in result.items():
+            f.write(f"{'='*40}\n{key.upper()}\n{'='*40}\n{value}\n\n")
+    
+    print(f"Script saved: {filename}")
+    print(f"\nHOOK: {result.get('hook_line', 'N/A')}")
+    print(f"TONE: {result.get('emotional_tone', 'N/A')}")
+```
+
+**To use:** `python generate_script.py "your story concept here"`
+
+### Human review step (5 minutes)
+
+After generation, open the script file and check:
+- Is the hook strong enough to stop a scroll? If not, rerun with "make the hook more shocking/mysterious/surprising"
+- Is the word count 120–140? Count manually or paste into a word counter
+- Do the scene prompts describe visually distinct moments? Each should feel different
+
+---
+
+## Section 6 — Voice generation workflow
+
+### Month 1: Kokoro-82M (free, local, CPU)
+
+Kokoro runs on CPU — your 1050 Ti isn't needed. Quality is good for a preset voice.
+
+Install and test:
+```python
+# install: pip install kokoro soundfile
+from kokoro import KPipeline
+import soundfile as sf
+
+pipeline = KPipeline(lang_code='a')  # 'a' = American English
+
+def generate_voiceover(script_text: str, output_path: str, voice: str = 'af_heart'):
+    """
+    Available voices: af_heart, af_bella, af_nicole, am_adam, am_michael
+    af_heart = warm female, good for emotional stories
+    am_michael = authoritative male, good for mysterious/eerie
+    """
+    generator = pipeline(script_text, voice=voice, speed=0.95)
+    audio_segments = []
+    sample_rate = 24000
+    
+    import numpy as np
+    for _, _, audio in generator:
+        audio_segments.append(audio)
+    
+    combined = np.concatenate(audio_segments)
+    sf.write(output_path, combined, sample_rate)
+    print(f"Voiceover saved: {output_path}")
+
+# Usage
+generate_voiceover(
+    "Your script text here...",
+    "C:\\TikTok_Studio\\audio\\voiceover_001.wav",
+    voice="af_heart"  # warm, emotional — good for stories
+)
+```
+
+**Voice selection guide for your niche:**
+- Mysterious/eerie stories → `am_michael` (deep, serious)
+- Heartwarming/inspiring → `af_heart` (warm, engaging)
+- Surprising/plot twist → `af_nicole` (clear, expressive)
+
+Speed at 0.95 gives a slightly slower, more dramatic delivery that works well for cinematic stories.
+
+### Month 2+: Fish Audio (cloned voice, $11/mo)
+
+Once you have a voice identity established, clone it with Fish Audio for consistency and higher quality:
+
+```python
+import requests
+import os
+
+FISH_API_KEY = os.environ.get("FISH_API_KEY")
+VOICE_ID = "your_voice_id_here"
+
+def generate_voiceover_fish(script_text: str, output_path: str):
+    response = requests.post(
+        "https://api.fish.audio/v1/tts",
+        headers={"Authorization": f"Bearer {FISH_API_KEY}"},
+        json={
+            "text": script_text,
+            "reference_id": VOICE_ID,
+            "format": "mp3",
+            "mp3_bitrate": 192
+        }
+    )
+    with open(output_path, "wb") as f:
+        f.write(response.content)
+    print(f"Fish Audio voiceover saved: {output_path}")
+```
+
+### Adding pacing: silence insertion
+
+For dramatic effect, add short pauses at key moments before burning subtitles:
+
+```python
+from pydub import AudioSegment
+
+def add_dramatic_pauses(input_path: str, output_path: str):
+    """Adds 0.4s pause at sentence boundaries for cinematic pacing"""
+    audio = AudioSegment.from_wav(input_path)
+    silence = AudioSegment.silent(duration=400)
+    # Insert silence every ~8 seconds (approximate sentence boundary)
+    result = AudioSegment.empty()
+    chunk_size = 8000  # 8 seconds in ms
+    for i in range(0, len(audio), chunk_size):
+        result += audio[i:i+chunk_size] + silence
+    result.export(output_path, format="wav")
+```
+
+---
+
+## Section 7 — Video generation and editing workflow
+
+### The cinematic pipeline for a 1050 Ti
+
+Because 4GB VRAM cannot run local video diffusion, your pipeline is:
+**AI images → Ken Burns animation → FFmpeg assembly → burned subtitles**
+
+This produces surprisingly cinematic results when done correctly. The key is using high-quality images and smooth, slow zoom/pan motion.
+
+### Step 1: Generate scene images
+
+Save as `generate_images.py`:
+
+```python
+import requests
+import os
+import urllib.parse
+from pathlib import Path
+
+def generate_scene_image(prompt: str, scene_num: int, visual_style: str, output_dir: str) -> str:
+    """Generate image using Pollinations.ai (free, no key needed)"""
+    
+    # Combine visual style with scene prompt for consistency
+    full_prompt = f"{visual_style}, {prompt}, 9:16 vertical composition, cinematic, highly detailed, no text, no watermark"
+    
+    # Pollinations API
+    encoded = urllib.parse.quote(full_prompt)
+    url = f"https://image.pollinations.ai/prompt/{encoded}?width=1080&height=1920&nologo=true&enhance=true"
+    
+    response = requests.get(url, timeout=60)
+    
+    output_path = os.path.join(output_dir, f"scene_{scene_num:02d}.png")
+    with open(output_path, "wb") as f:
+        f.write(response.content)
+    
+    print(f"Scene {scene_num} generated: {output_path}")
+    return output_path
+
+def generate_all_scenes(scene_prompts: list, visual_style: str, output_dir: str) -> list:
+    """Generate all 6 scene images for a video"""
+    paths = []
+    for i, prompt in enumerate(scene_prompts, 1):
+        path = generate_scene_image(prompt, i, visual_style, output_dir)
+        paths.append(path)
+    return paths
+
+# Usage example
+scene_prompts = [
+    "old lighthouse on rocky cliff at stormy night, waves crashing",
+    "weathered fisherman's hands holding glass bottle with paper inside",
+    "yellowed letter with handwritten words, candlelight, close up",
+    "young woman standing at cliff edge looking at horizon, dramatic sky",
+    "lighthouse beam cutting through dark fog, lone boat approaching",
+    "two figures reuniting on dock, golden hour, silhouette"
+]
+
+visual_style = "dark cinematic oil painting style, dramatic chiaroscuro lighting, muted earth tones"
+
+images = generate_all_scenes(
+    scene_prompts,
+    visual_style,
+    "C:\\TikTok_Studio\\images\\"
+)
+```
+
+**Image prompt structure that works:**
+```
+[specific subject and action], [environment/setting], [lighting], [mood detail]
+```
+Always add your `visual_style` prefix to every prompt. This is what creates visual consistency across all 6 scenes.
+
+### Step 2: Animate images with Ken Burns effect
+
+This is what makes static images feel cinematic. Each image gets a slow zoom or pan movement matched to the voiceover duration.
+
+Save as `animate_scenes.py`:
+
+```python
+import subprocess
+import os
+
+def get_audio_duration(audio_path: str) -> float:
+    """Get duration of audio file in seconds"""
+    result = subprocess.run([
+        "ffprobe", "-v", "error", "-show_entries", "format=duration",
+        "-of", "default=noprint_wrappers=1:nokey=1", audio_path
+    ], capture_output=True, text=True)
+    return float(result.stdout.strip())
+
+def animate_scene(image_path: str, output_path: str, duration: float, effect: str = "zoom_in"):
+    """
+    Apply Ken Burns effect to a single image.
+    Effects: zoom_in, zoom_out, pan_right, pan_left, zoom_pan
+    """
+    
+    effects = {
+        "zoom_in":   "zoompan=z='min(zoom+0.0008,1.3)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'",
+        "zoom_out":  "zoompan=z='if(lte(zoom,1.0),1.3,max(1.001,zoom-0.0008))':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)'",
+        "pan_right": "zoompan=z='1.2':x='if(lte(on,1),0,x+2)':y='ih/2-(ih/zoom/2)'",
+        "pan_left":  "zoompan=z='1.2':x='if(lte(on,1),iw,x-2)':y='ih/2-(ih/zoom/2)'",
+        "zoom_pan":  "zoompan=z='min(zoom+0.0006,1.25)':x='iw/2-(iw/zoom/2)+sin(on/30)*20':y='ih/2-(ih/zoom/2)'"
+    }
+    
+    vf = effects.get(effect, effects["zoom_in"])
+    frames = int(duration * 30)
+    
+    cmd = [
+        "ffmpeg", "-y",
+        "-loop", "1",
+        "-i", image_path,
+        "-vf", f"{vf},fps=30,scale=1080:1920",
+        "-t", str(duration),
+        "-c:v", "libx264",
+        "-preset", "fast",
+        "-crf", "18",
+        output_path
+    ]
+    subprocess.run(cmd, check=True, capture_output=True)
+    print(f"Animated: {output_path}")
+
+def animate_all_scenes(image_paths: list, audio_path: str, output_dir: str) -> list:
+    """Animate all scenes with varied effects for visual interest"""
+    total_duration = get_audio_duration(audio_path)
+    scene_duration = total_duration / len(image_paths)
+    
+    # Alternate effects for visual variety
+    effects_sequence = ["zoom_in", "pan_right", "zoom_out", "pan_left", "zoom_pan", "zoom_in"]
+    
+    clip_paths = []
+    for i, image_path in enumerate(image_paths):
+        effect = effects_sequence[i % len(effects_sequence)]
+        output_path = os.path.join(output_dir, f"clip_{i+1:02d}.mp4")
+        animate_scene(image_path, output_path, scene_duration, effect)
+        clip_paths.append(output_path)
+    
+    return clip_paths
+```
+
+### Step 3: Generate subtitles
+
+```python
+import whisper
+import os
+
+def generate_subtitles(audio_path: str, output_dir: str) -> str:
+    """Transcribe voiceover and generate SRT subtitle file"""
+    model = whisper.load_model("base")  # base model runs well on CPU
+    result = model.transcribe(audio_path, word_timestamps=True)
+    
+    srt_path = os.path.join(output_dir, "subtitles.srt")
+    
+    with open(srt_path, "w", encoding="utf-8") as f:
+        for i, segment in enumerate(result["segments"], 1):
+            start = format_timestamp(segment["start"])
+            end = format_timestamp(segment["end"])
+            text = segment["text"].strip()
+            f.write(f"{i}\n{start} --> {end}\n{text}\n\n")
+    
+    print(f"Subtitles saved: {srt_path}")
+    return srt_path
+
+def format_timestamp(seconds: float) -> str:
+    h = int(seconds // 3600)
+    m = int((seconds % 3600) // 60)
+    s = int(seconds % 60)
+    ms = int((seconds % 1) * 1000)
+    return f"{h:02d}:{m:02d}:{s:02d},{ms:03d}"
+```
+
+### Step 4: Assemble the final video
+
+```python
+import subprocess
+import os
+
+def assemble_video(
+    clip_paths: list,
+    audio_path: str,
+    subtitle_path: str,
+    music_path: str,
+    output_path: str
+):
+    """
+    Concatenate all clips, add voiceover + background music,
+    burn subtitles, enforce 9:16 safe zones.
+    """
+    
+    # Step 4a: Create clip list file for FFmpeg concat
+    concat_file = "C:\\TikTok_Studio\\temp_concat.txt"
+    with open(concat_file, "w") as f:
+        for clip in clip_paths:
+            f.write(f"file '{clip}'\n")
+    
+    # Step 4b: Concatenate all clips into one silent video
+    raw_video = "C:\\TikTok_Studio\\temp_raw.mp4"
+    subprocess.run([
+        "ffmpeg", "-y", "-f", "concat", "-safe", "0",
+        "-i", concat_file, "-c", "copy", raw_video
+    ], check=True, capture_output=True)
+    
+    # Step 4c: Mix voiceover (100% volume) + background music (12% volume)
+    # Subtitle style: large, bold, white with black outline — TikTok optimized
+    subtitle_style = (
+        "FontName=Arial,FontSize=22,Bold=1,"
+        "PrimaryColour=&HFFFFFF,OutlineColour=&H000000,"
+        "Outline=3,Shadow=0,Alignment=2,"
+        "MarginV=180"  # pushed up from bottom to clear TikTok UI
+    )
+    
+    subprocess.run([
+        "ffmpeg", "-y",
+        "-i", raw_video,
+        "-i", audio_path,
+        "-i", music_path,
+        "-filter_complex",
+        f"[1:a]volume=1.0[voice];[2:a]volume=0.12[music];[voice][music]amix=inputs=2:duration=first[audio];"
+        f"[0:v]subtitles={subtitle_path}:force_style='{subtitle_style}'[video]",
+        "-map", "[video]",
+        "-map", "[audio]",
+        "-c:v", "libx264",
+        "-preset", "medium",
+        "-crf", "20",
+        "-c:a", "aac",
+        "-b:a", "192k",
+        "-shortest",
+        output_path
+    ], check=True)
+    
+    print(f"Final video assembled: {output_path}")
+    return output_path
+```
+
+### Month 2+ upgrade: Kling AI for actual video clips
+
+When budget allows, replace the Ken Burns step with Kling AI:
+1. Go to klingai.com
+2. Use "Image to Video" — upload your Pollinations scene image
+3. Set duration to 5 seconds, motion: slow, aspect: 9:16
+4. Download the clip and drop it into your `video_clips\` folder
+5. The rest of the assembly pipeline stays identical
+
+At 6 clips per video × 1 video/day × 30 days = 180 clips/month. Kling Standard gives ~150 credits/month which covers ~1 video/day with some room for retries.
+
+---
+
+## Section 8 — Thumbnail / cover workflow
+
+TikTok uses your video's first frame as the default cover but lets you choose any frame or upload a custom image. A custom thumbnail increases click-through on profile views and search.
+
+### Quick thumbnail workflow (10 minutes per video)
+
+**Option A: Best frame from video (fastest)**
+```python
+def extract_thumbnail(video_path: str, output_path: str, timestamp: str = "00:00:02"):
+    """Extract frame at timestamp as thumbnail — use a visually strong moment"""
+    subprocess.run([
+        "ffmpeg", "-y", "-ss", timestamp,
+        "-i", video_path,
+        "-vframes", "1",
+        "-q:v", "2",
+        output_path
+    ], check=True)
+```
+Choose a timestamp where the most visually striking frame appears.
+
+**Option B: Canva (5 minutes, free)**
+1. Open Canva → New design → TikTok Video Cover (1080×1920)
+2. Upload your best scene image as background
+3. Add the hook line as large text (white, bold, slight dark overlay behind it)
+4. Export as PNG
+5. Upload as custom cover when posting on TikTok
+
+**Thumbnail best practices for your niche:**
+- Show the most visually dramatic scene image as background
+- Overlay the hook line in 2–3 large words max
+- Dark, cinematic color grade
+- No human faces needed — the visual itself is the draw
+- Avoid cluttered text — one strong visual + one short phrase wins
+
+---
+
+## Section 9 — Quality control checklist
+
+Run this before every upload. Takes 3 minutes.
+
+### Technical checks
+- [ ] Video is exactly 1080×1920 (9:16) — verify in file properties
+- [ ] Duration is 45–60 seconds — not under 40s or over 65s
+- [ ] Audio is clear, no clipping or distortion
+- [ ] Background music is at 10–15% — voice always dominates
+- [ ] Subtitles are visible and don't cover TikTok UI (bottom 20% of screen)
+- [ ] No watermarks, no logos, no copyright-protected music
+- [ ] File size under 500MB (usually 30–80MB for a 60s video at these settings)
+
+### Content checks
+- [ ] Hook lands in the first 2 seconds — test by watching with sound off
+- [ ] Pacing feels right — not too fast, not too slow
+- [ ] Each scene transition is smooth (no jarring cuts)
+- [ ] The emotional payoff hits — watch the last 10 seconds fresh
+- [ ] Visual style is consistent across all 6 scenes
+- [ ] No scene is longer than 12 seconds without movement
+
+### TikTok-specific checks
+- [ ] Caption is ready (hook line + 3–4 hashtags, under 150 chars)
+- [ ] First 3 seconds would stop a scroll — watch it cold, decide in 3s
+- [ ] Sound on + sound off both tell the story (subtitles carry the audio-off experience)
+- [ ] No misleading claims, no graphic content
+
+### If something fails the check
+- Hook too weak → regenerate 3 alternative hooks with Gemini, swap the first line
+- Visual inconsistency → regenerate the outlier scene with the same style prefix
+- Subtitle misalignment → re-run Whisper and adjust in the SRT file manually
+- Pacing too fast → increase scene duration by 10%, re-export
+
+---
+
+## Section 10 — Publishing workflow
+
+You've chosen manual publishing — the right call. This is the safest approach and takes under 5 minutes per video.
+
+### Pre-upload preparation
+
+**Generate your caption with Gemini:**
+```python
+def generate_caption(hook_line: str, emotional_tone: str) -> str:
+    prompt = f"""
+Write a TikTok caption for a cinematic animated short story.
+
+Hook line: {hook_line}
+Emotional tone: {emotional_tone}
+
+Requirements:
+- First 100 characters: the hook line or a slightly rewritten version
+- 3–4 hashtags mixing niche + broad: one from (#animatedstory #aistory #shortfilm), one broad (#storytime #fyp)
+- One engagement CTA: "Comment if you want Part 2" or "Follow for daily stories"
+- Total under 200 characters
+- No emojis
+"""
+    model = genai.GenerativeModel("gemini-2.5-flash")
+    return model.generate_content(prompt).text
+```
+
+### Posting steps (TikTok app, manual)
+
+1. Open TikTok → tap "+" to create
+2. Tap "Upload" → select your final video from phone gallery
+   (transfer file to phone first via USB or cloud sync)
+3. Let TikTok process the video (30–60 seconds)
+4. On the editing screen: tap "Select cover" → choose the best frame or upload custom thumbnail
+5. Paste your pre-written caption into the description field
+6. Add sounds: do NOT add TikTok sounds via the app — your video already has background music
+7. Privacy: set to "Everyone"
+8. Turn on "Allow duet" and "Allow stitch" (increases distribution)
+9. Tap "Post"
+
+### Optimal posting times (English, teen+ audience)
+
+Based on engagement patterns for this audience:
+- **Best:** 7–9 PM local time (audience timezone — assume US/UK split)
+- **Good:** 12–1 PM (lunch), 3–5 PM (after school)
+- **Avoid:** before 8 AM, after 11 PM
+
+Post at the same time each day for the first 30 days. Consistency signals a reliable account to the algorithm.
+
+### Posting frequency ramp-up
+
+| Week | Videos/day | Goal |
+|------|-----------|------|
+| 1–2 | 1 | Learn the pipeline, fix issues |
+| 3–4 | 1–2 | Find what hooks land |
+| 5–8 | 2–3 | Double down on best format |
+| Month 3+ | 3–5 | Scale with automation |
+
+Don't rush to 5/day. One video that performs well teaches you more than five mediocre ones.
+
+---
+
+## Section 11 — Scaling strategy: 1 video/day → 10+/day
+
+### Phase 1 (Month 1–2): Nail the formula
+
+Goal: find one story format and hook type that consistently gets 60%+ completion rate.
+
+Signs you've found it:
+- 3+ videos from same format cross 10K views
+- Completion rate above 50% in TikTok analytics
+- Comments asking "Part 2?" or "What happens next?"
+
+Don't scale until you've found this. Scaling a broken formula just produces more bad content faster.
+
+### Phase 2 (Month 2–3): Automate the pipeline
+
+Once the formula works, automate the daily sequence:
+
+Create `daily_run.py` that chains all steps:
+```python
+import subprocess
+import os
+from datetime import datetime
+
+def run_daily_pipeline(concept: str):
+    date = datetime.now().strftime("%Y%m%d")
+    base = f"C:\\TikTok_Studio"
+    
+    print(f"\n{'='*50}")
+    print(f"Daily Pipeline — {date}")
+    print(f"Concept: {concept}")
+    print(f"{'='*50}\n")
+    
+    # Step 1: Generate script
+    print("[1/6] Generating script...")
+    subprocess.run(["python", f"{base}\\generate_script.py", concept], check=True)
+    
+    # Step 2: Generate voiceover
+    print("[2/6] Generating voiceover...")
+    # (load script, call TTS function)
+    
+    # Step 3: Generate scene images
+    print("[3/6] Generating scene images...")
+    # (load scene prompts, call image generation)
+    
+    # Step 4: Animate scenes
+    print("[4/6] Animating scenes...")
+    # (Ken Burns on all 6 images)
+    
+    # Step 5: Generate subtitles
+    print("[5/6] Transcribing for subtitles...")
+    # (Whisper on voiceover)
+    
+    # Step 6: Assemble final video
+    print("[6/6] Assembling final video...")
+    # (FFmpeg assembly)
+    
+    print(f"\nDone! Video ready for QC: {base}\\final\\{date}.mp4")
+    print("Run quality checklist, then transfer to phone for posting.")
+
+if __name__ == "__main__":
+    import sys
+    concept = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else input("Enter today's story concept: ")
+    run_daily_pipeline(concept)
+```
+
+Schedule this with Windows Task Scheduler to run at 9 AM every day.
+
+### Phase 3 (Month 3–4): Multiple formats, batch production
+
+Once the pipeline is stable, run it for 3 concepts on Sunday evening:
+- Monday's video
+- Wednesday's video  
+- Friday's video
+
+Review all three Monday morning in one sitting. This batches your cognitive work (content decisions) while the computer handles the mechanical work.
+
+### Phase 4 (Month 4+): Upgrade the stack
+
+With revenue or saved budget:
+- Add Kling AI Pro ($28/mo) → real AI video clips → cinematic quality jump
+- Add a second TikTok account in a slightly different angle of the same niche
+- Add YouTube Shorts as a second platform with the same content (zero extra work)
+
+---
+
+## Section 12 — Common mistakes to avoid
+
+### Mistakes that kill channels before they start
+
+**1. Posting inconsistently**
+Three videos one week, nothing for two weeks destroys algorithmic momentum. One video every single day beats burst posting. Set a schedule and protect it.
+
+**2. Copying hooks without understanding why they work**
+A hook works because it creates a specific emotion in a specific audience. Copying the words without the emotion logic produces flat content. Understand *why* the hook stops the scroll.
+
+**3. Ignoring completion rate**
+Views are a vanity metric. Completion rate is what the TikTok algorithm actually rewards. A 10K-view video with 80% completion gets pushed harder than a 100K-view video with 15% completion. Check analytics every 48 hours.
+
+**4. Making videos too long**
+45–55 seconds is the sweet spot for this format. Anything over 60 seconds loses significant completion rate with a teen+ audience. Resist the urge to add more story.
+
+**5. Inconsistent visual style**
+If Scene 1 looks like a dark oil painting and Scene 4 looks like a bright cartoon, the video feels cheap. Always prefix every image prompt with your `visual_style` phrase.
+
+**6. Uploading during bad hours**
+Posting at 3 AM means your video competes for algorithm slots when engagement is lowest. Your first 30 minutes of views matter most. Post when your audience is active.
+
+**7. Adding copyrighted music**
+TikTok auto-detects copyrighted audio and either mutes the video or kills its distribution. Only use royalty-free tracks from Pixabay, FreePD, or YouTube Audio Library.
+
+**8. Changing niche before giving it time**
+Niche-switching before 30 videos is almost always a mistake. The algorithm needs a consistent content signal to know who to show your videos to. Commit to one niche for 60 days minimum.
+
+**9. Over-engineering before proving the concept**
+Don't spend two weeks perfecting your automation pipeline before posting your first video. Post manually, get real feedback, then automate the parts that are working.
+
+**10. Not keeping a content log**
+Write down the hook, format, emotional tone, and performance stats for every video. This is your data. After 20 videos, patterns emerge that no blog post can predict for your specific account.
+
+---
+
+## Section 13 — Backup alternatives
+
+If any tool becomes unavailable or too expensive, here's what to swap in with minimal pipeline disruption.
+
+| Current tool | Backup option | Swap difficulty |
+|---|---|---|
+| Gemini API (script) | Claude API or GPT-4o Mini | Easy — swap API call |
+| Pollinations (images) | Stability AI free tier / Ideogram | Easy — swap URL |
+| Kokoro TTS | Piper TTS (offline, free) | Easy — same output format |
+| Fish Audio | XTTS-v2 (self-hosted, free) | Medium — local install |
+| FFmpeg (assembly) | No real alternative — FFmpeg is irreplaceable | N/A (it won't disappear) |
+| Kling AI (video clips) | Runway Gen-4, Pika 2.0 | Easy — same image-to-video concept |
+| Whisper (subtitles) | faster-whisper (2× faster, same CPU) | Easy — drop-in replacement |
+| Canva (thumbnails) | GIMP (free, local) | Medium — steeper UI |
+
+### If Gemini free tier limits become a problem
+
+Gemini 2.5 Flash free tier allows 1,500 requests/day. For 1 video/day you use roughly 3–5 requests. You will not hit this limit. If you scale to 10+ videos/day, you may need Gemini paid tier (~$0.15 per million tokens — still well under $5/month at this usage).
+
+### If Pollinations becomes unreliable
+
+Pollinations is free but has occasional rate limiting during peak hours. Solutions:
+- Run image generation at off-peak hours (5–7 AM)
+- Add retry logic (3 attempts with 30-second delays)
+- Keep Ideogram.ai as a backup (100 free images/month)
+
+### Nuclear backup: everything offline
+
+If all cloud APIs disappear (unlikely but worth knowing):
+- Stable Diffusion 1.5 runs on 4GB VRAM — install via AUTOMATIC1111
+- Piper TTS runs on CPU, zero internet needed
+- This gives you a fully local pipeline at zero ongoing cost, with lower quality
+
+---
+
+## Appendix — Complete file naming convention
+
+Use this consistently so your automation scripts can find files predictably:
+
+```
+scripts\     script_YYYYMMDD_HHMM.txt
+audio\       vo_YYYYMMDD.wav
+images\      scene_01.png through scene_06.png  (overwritten each day)
+video_clips\ clip_01.mp4 through clip_06.mp4
+subtitles\   subs_YYYYMMDD.srt
+final\       final_YYYYMMDD.mp4
+thumbnails\  thumb_YYYYMMDD.png
+```
+
+---
+
+## Appendix — Environment variables setup (Windows)
+
+Set these once so no API keys are hardcoded in scripts:
+
+1. Search "Environment Variables" in Windows Start
+2. Click "Edit the system environment variables"
+3. Click "Environment Variables" → "New" under User variables
+
+| Variable | Value |
+|---|---|
+| `GEMINI_API_KEY` | your Gemini key |
+| `FISH_API_KEY` | your Fish Audio key (month 2) |
+| `TIKTOK_STUDIO` | `C:\TikTok_Studio` |
+
+---
+
+*Last updated: May 2026 — verified against Gemini 2.5 Flash, Kokoro-82M, Pollinations, Fish Audio S2, Kling AI Standard, FFmpeg 7.x*
