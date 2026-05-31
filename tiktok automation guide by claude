@@ -1,0 +1,361 @@
+# TikTok Automation Guide 2026
+### + Analysis of sahil0202/Youtube_Automation
+
+---
+
+## Part 1 — Repo Analysis: sahil0202/Youtube_Automation
+
+### What it actually is
+
+This repo is a meaningful step up from the darkzOGx repo reviewed earlier. Where darkzOGx was pure scaffolding with no video production, sahil0202's project actually attempts to close that gap. The headline difference: it can produce a real MP4 file, not just metadata.
+
+The core pipeline is:
+1. Gemini generates a concept, script, title, and scene prompts
+2. An image storyboard agent creates one AI image per scene
+3. Those images are stitched into an animated MP4 with narration audio
+4. Optionally, Google Veo 3.1 can be called for cinematic AI video instead of the slideshow fallback
+5. The result uploads to YouTube via OAuth
+
+This is a significantly more complete automation than most open-source repos in this space.
+
+### Genuine strengths
+
+- **Actual video output** — the storyboard-to-MP4 pipeline is real and functional, not a placeholder
+- **Veo 3.1 integration** — opt-in path to Google's cinematic video generator via `USE_VEO=true`
+- **Multiple image providers** — supports OpenAI (gpt-image-1), DALL-E, Gemini image preview, Imagen 4, and Pollinations (free, no key required)
+- **Multiple TTS options** — Gemini TTS (default), OpenAI TTS, ElevenLabs, and macOS local voice
+- **ffmpeg-static bundled** — no system FFmpeg install required
+- **SQLite for state** — content, schedules, and metadata persist properly
+- **REST API + dashboard** — generate and preview via browser at localhost:3456
+- **Clean separation** — agents, utils, database, schedules are properly separated
+- **2 commits** — still minimal history, but one is an actual functional update
+
+### Real weaknesses
+
+- **Storyboard quality ceiling** — the default output is a slideshow of AI images with narration, not a fluent video. This is fine for certain niches (stories, educational content) but looks obviously automated on TikTok
+- **Veo access is gated** — Veo 3.1 requires Google Cloud billing enabled and explicit API quota approval; most users will hit the storyboard fallback
+- **No 9:16 support** — `VEO_ASPECT_RATIO` defaults to 16:9. For TikTok/Shorts you need 9:16, and this requires manual config plus a re-crop step
+- **TikTok: zero support** — publishing is YouTube-only. No TikTok Content Posting API, no 9:16 formatting pipeline, no caption/hashtag optimization for TikTok
+- **No voice cloning** — TTS options are preset voices only. There's no mechanism to clone a consistent branded voice
+- **No trend research for short-form** — the content strategy layer is designed for long-form YouTube, not for the hook-first, 15-60 second format TikTok rewards
+- **Token refresh fragility** — same issue as other repos: tokens expire and there's no auto-refresh daemon
+- **Image rate limits cause silent failures** — the README acknowledges Gemini/Imagen image rate limits require retry logic; the app handles some retries but can still produce placeholder images silently if all APIs fail and `ALLOW_LOCAL_IMAGE_FALLBACK=true`
+
+### Verdict
+
+Rating vs darkzOGx: **significantly better**. This repo actually produces video and has a more honest implementation. For YouTube long-form storyboard content (stories, explainers, educational), it's a usable starting point. For TikTok automation, it covers roughly 20% of what you need — the script/concept layer works, but everything else (format, publishing, hook structure, posting API) needs to be built.
+
+**Pipeline coverage estimate:**
+- YouTube storyboard content: ~45%
+- TikTok automation: ~20%
+- Cross-platform (YouTube + TikTok): ~25%
+
+---
+
+## Part 2 — Complete TikTok Automation Guide
+
+### The fundamental difference between YouTube and TikTok automation
+
+YouTube automation can tolerate slower pipelines, longer content, and more deliberate SEO work. TikTok automation is a different discipline entirely:
+
+- Videos are 15–60 seconds (occasionally 3 minutes for TikTok Stories)
+- The first 2 seconds determine whether anyone watches
+- The algorithm is discovery-first, not search-first — hashtags and keywords matter less than watch-through rate and shares
+- Posting frequency matters more: 1–3 videos per day consistently outperforms 7 videos once a week
+- 9:16 vertical format is mandatory
+- Native audio (trending sounds) performs better than external voiceover, but is unavailable via API — automation must compensate with strong scripting and visual pacing
+
+---
+
+## The full TikTok automation stack
+
+### Layer 1 — Content research & trend detection
+
+Unlike YouTube where keyword research dominates, TikTok success depends on spotting trends early. Your automation needs:
+
+**Trend scraping (unofficial, fragile but powerful):**
+- `tiktok-scraper` (npm) or `TikTokApi` (Python) to pull trending videos by hashtag or sound
+- Parse the top 50 videos in your niche daily, extract hooks, formats, and topic clusters
+- Feed those patterns to an LLM to generate variations, not copies
+
+**Official research tools:**
+- TikTok Creative Center (manual, but has a trends API for Business accounts)
+- Google Trends + Reddit scraping for topic signals before they hit TikTok
+- YouTube Shorts trending — TikTok trends often appear on Shorts 48–72 hours later
+
+**Recommended pipeline:** Cron job at 6 AM daily → scrape top 50 trending videos in niche → extract hook patterns and topics → LLM generates 5 script candidates → human or automated selection → enter production queue.
+
+---
+
+### Layer 2 — Script writing for short-form
+
+TikTok scripts follow a rigid structure that differs entirely from YouTube:
+
+```
+[0–2s]   HOOK — pattern interrupt, bold claim, or curiosity gap
+[2–8s]   SETUP — one sentence of context
+[8–45s]  VALUE — the actual content, delivered fast
+[45–55s] CTA — "follow for more", "comment X if...", "share this"
+```
+
+When prompting an LLM for TikTok scripts:
+- Specify word count: ~130 words for a 60-second video at natural speech pace
+- Require the hook to be the first sentence, no preamble
+- Avoid transitions like "Now," "So," "As we can see" — these kill watch time
+- Request 3 hook variants per script so you can test which performs
+
+Example system prompt addition:
+```
+Write a TikTok script for: {topic}
+- First sentence must be the hook. No greeting, no intro.
+- Total length: 120–140 words
+- Tone: {niche_tone}
+- End with one engagement CTA
+- Provide 3 alternative opening hooks at the bottom
+```
+
+---
+
+### Layer 3 — Video production (the core gap)
+
+This is where most automation repos fail. For TikTok specifically, you have three viable approaches:
+
+**Option A: Faceless stock footage + voiceover (easiest)**
+
+The MoneyPrinterTurbo approach. Works well for educational, news, facts, and listicle content.
+
+Stack:
+- MoneyPrinterTurbo (harry0703/MoneyPrinterTurbo) — handles script → stock footage → TTS → subtitles → MP4
+- Set `video_aspect` to `9:16` in config
+- Use Chatterbox or Fish Audio for higher-quality TTS than the defaults
+- Add word-by-word subtitle highlighting (use the Asad-Ismail/MoneyPrinterTurbo-Extended fork)
+
+Weaknesses: stock footage looks generic and audiences are increasingly good at recognizing it.
+
+**Option B: AI image storyboard (what sahil0202 does)**
+
+Good for: story channels, history, mythology, motivational, horror narrative, "imagine if" formats.
+
+Stack:
+- sahil0202/Youtube_Automation with `USE_VEO=false` for fast generation
+- Force 9:16: set `VEO_ASPECT_RATIO=9:16` and ensure image generation uses portrait dimensions
+- Add pan-and-zoom (Ken Burns effect) to static images using FFmpeg:
+  ```
+  ffmpeg -loop 1 -i image.jpg -vf "zoompan=z='min(zoom+0.001,1.5)':d=125:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)',scale=1080:1920" -t 5 out.mp4
+  ```
+- This makes static image content look significantly more professional
+
+**Option C: AI video generation (highest quality, highest cost)**
+
+For premium channels where quality justifies compute cost.
+
+Stack:
+- Wan 2.2 or HunyuanVideo for clip generation (self-hosted GPU)
+- ComfyUI with TikTok-optimized workflows (9:16 native output)
+- Generate 4–6 short clips (3–5s each) per video, stitch with FFmpeg
+- Add Chatterbox TTS voiceover and burn-in subtitles
+
+Compute requirement: RTX 4090 or cloud GPU (Lambda Labs ~$0.80/hr). A 60-second video needs ~6 clips at 12–18 min each on an RTX 3080 → ~2 hours render time. Plan your queue accordingly.
+
+---
+
+### Layer 4 — Post-production essentials
+
+TikTok-specific post-production that automation must handle:
+
+**Subtitles (mandatory):**
+TikTok is often watched without sound. Auto-generate subtitles using Whisper (OpenAI, open source) and burn them into the video:
+```python
+import whisper
+model = whisper.load_model("base")
+result = model.transcribe("voiceover.mp3")
+# Generate .srt from result["segments"]
+# Burn with FFmpeg: -vf subtitles=output.srt
+```
+Style: large white text, black stroke, centered in lower third. Not small captions — TikTok-sized bold text.
+
+**Safe zone padding:**
+TikTok UI overlays the bottom 20% (username, caption, audio bar) and right side (action buttons). Keep all text and important visual content in the center 60% of the frame.
+
+**Aspect ratio enforcement:**
+Every video must be exactly 1080×1920 (9:16) or TikTok will add letterbox bars, which kills engagement. Add an FFmpeg normalize step:
+```
+ffmpeg -i input.mp4 -vf "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920" output.mp4
+```
+
+**Duration:**
+15–34 seconds: best for discovery and loop plays
+35–60 seconds: best for saves and shares (algorithm rewards this)
+60–180 seconds: only works if you have an existing audience
+
+---
+
+### Layer 5 — TikTok publishing (the hardest part)
+
+This is where TikTok makes your life complicated.
+
+**The API reality:**
+
+TikTok's Content Posting API (`open.tiktokapis.com`) is the only official path. Key facts:
+- Uses OAuth 2.0, MP4 up to 1 GB, max 25 videos/account/day
+- Has two modes: Direct Post (public, requires audit) and Creator's Draft (goes to inbox, no audit needed)
+- **The audit is the blocker**: your app must pass TikTok's manual review (2–4 weeks, multiple rounds) before Direct Post works publicly. Until then, every post is private
+- Access tokens expire every 24 hours — you must implement token refresh in your automation
+- Before every post, your app's UI must display the creator's username and avatar (TikTok verifies this during audit)
+
+**Practical options:**
+
+1. **Build + go through audit** — the right long-term path for a serious operation. Apply at developers.tiktok.com, document your use case clearly, implement the required UX compliance elements. Takes 2–6 weeks.
+
+2. **Use a pre-audited API wrapper** — services like Zernio, Postiz, or Upload-Post have already passed the audit and expose a simple REST API you can call. Pricing is typically $10–20/1,000 posts. This is the fastest path to working automation.
+
+3. **Creator's Draft mode** — available without audit. Posts go to your TikTok inbox as drafts; you or your team manually publish. Not fully automated, but functional while waiting for audit approval. Good for a hybrid workflow.
+
+4. **Browser automation (Playwright/Puppeteer)** — technically possible, explicitly against TikTok's ToS, and fragile when TikTok changes its UI. Not recommended for anything you want to rely on.
+
+**Recommended implementation:**
+
+```javascript
+// TikTok Content Posting API — Direct Post flow
+async function postToTikTok(videoPath, caption, hashtags) {
+  // Step 1: Get creator info
+  const creatorInfo = await fetch('https://open.tiktokapis.com/v2/post/publish/creator_info/query/', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' }
+  });
+
+  // Step 2: Initialize upload
+  const init = await fetch('https://open.tiktokapis.com/v2/post/publish/video/init/', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      post_info: {
+        title: caption,
+        privacy_level: 'PUBLIC_TO_EVERYONE', // requires audit
+        disable_duet: false,
+        disable_stitch: false,
+        video_cover_timestamp_ms: 1000
+      },
+      source_info: { source: 'FILE_UPLOAD', video_size: fileSize, chunk_size: chunkSize, total_chunk_count: chunks }
+    })
+  });
+  const { publish_id, upload_url } = await init.json();
+
+  // Step 3: Upload chunks
+  // Step 4: Poll /v2/post/publish/status/fetch/ until PUBLISH_COMPLETE
+}
+
+// Token refresh (runs every 23 hours)
+async function refreshToken(refreshToken) {
+  const response = await fetch('https://open.tiktokapis.com/v2/oauth/token/', {
+    method: 'POST',
+    body: new URLSearchParams({ client_key, client_secret, grant_type: 'refresh_token', refresh_token: refreshToken })
+  });
+  return response.json(); // store new access_token and refresh_token
+}
+```
+
+---
+
+### Layer 6 — Caption and hashtag strategy
+
+TikTok captions are limited to 2,200 characters but the first 100 characters show in feed without expanding. Your automation should:
+
+- Put the hook or most compelling line in the first 100 characters
+- Use 3–5 hashtags, not 20 — TikTok's algorithm no longer benefits from hashtag stuffing
+- Mix: 1 niche-specific (#learnhistory), 1 format (#storytelling), 1 broad (#facts)
+- Add a text CTA at the end: "Follow for daily [topic]"
+
+LLM prompt for caption generation:
+```
+Generate a TikTok caption for a video about: {topic}
+- First line (max 100 chars): compelling hook or key claim
+- 3-5 relevant hashtags at the end
+- One call to action
+- Total under 200 characters
+```
+
+---
+
+### Layer 7 — Analytics and feedback loop
+
+TikTok's Research API (for business accounts) gives you:
+- Video performance: views, likes, comments, shares, watch time, completion rate
+- Profile analytics: follower growth, demographics
+
+The metric that matters most for algorithm growth is **completion rate** (what % of people watch to the end). A video with 10K views and 80% completion beats one with 100K views and 10% completion for future distribution.
+
+Build a feedback loop:
+1. Pull completion rate for every posted video after 48 hours
+2. Tag the hook style, topic, and format used
+3. After 30 videos, identify which hook patterns and formats correlate with highest completion
+4. Weight the script generator to prefer those patterns
+
+---
+
+## Connecting sahil0202's repo to TikTok
+
+The most practical path to using sahil0202/Youtube_Automation for TikTok:
+
+**Step 1:** Force portrait format. In the image storyboard agent, change image generation dimensions to 1080×1920. In the FFmpeg stitching step, ensure the output is 1080×1920.
+
+**Step 2:** Shorten the pipeline. Configure generation for 30–45 second output (4–6 scenes at ~7 seconds each) rather than the default longer format.
+
+**Step 3:** Replace the YouTube publishing agent with a TikTok posting module using the Content Posting API (or a Postiz/Zernio wrapper while awaiting audit approval).
+
+**Step 4:** Add Whisper-based subtitle burning as a post-production step before upload.
+
+**Step 5:** Replace the content strategy agent's prompts with TikTok-specific hook-first scripts using the format above.
+
+This gives you a working TikTok pipeline built on top of a codebase that already handles the hardest parts (video generation, scheduling, database).
+
+---
+
+## Realistic cost and output estimates
+
+| Configuration | Videos/day | Cost/video | Monthly cost |
+|---|---|---|---|
+| Gemini free + Pollinations (free images) | 3–5 | ~$0 | ~$0 + $5 VPS |
+| Gemini paid + Fish Audio TTS | 10 | ~$0.05 | ~$15 |
+| OpenAI images + Chatterbox self-hosted | 5 | ~$0.30 | ~$45 |
+| Wan 2.2 self-hosted GPU (cloud) | 3–4 | ~$1.50 | ~$130 |
+| Full quality (Veo 3.1 + ElevenLabs) | 2–3 | ~$3–5 | ~$250+ |
+
+Most creators find the sweet spot is the second row: Gemini for scripting + Fish Audio for voice + Pollinations or Gemini for images. Good enough quality at negligible cost, scalable to 10 posts/day.
+
+---
+
+## Hidden risks and compliance notes
+
+**TikTok ToS compliance:**
+- You cannot add watermarks, brand logos, or promotional overlays to content posted via the API
+- You cannot automate engagement (likes, follows, comments) — this is a ban trigger
+- Posting the same video multiple times or reposting others' content violates terms
+
+**Account safety:**
+- TikTok bans move fast. Do not run automation on your primary monetized account until you've tested on a secondary account for 30+ days
+- Post frequency above 5–6/day on a new account often triggers shadow restrictions
+- Vary posting times — cron jobs that post at exactly 9:00 AM every day look robotic to the platform
+
+**Algorithm reality in 2026:**
+TikTok's FYP (For You Page) distributes to test cohorts of 200–500 users first. If watch time and engagement from that cohort is strong, it distributes wider. No amount of automation compensates for genuinely weak content in that first cohort. The automation handles scale; the human judgment still has to pick the right niche, format, and hook style.
+
+---
+
+## Recommended full stack (2026)
+
+| Layer | Tool | Cost |
+|---|---|---|
+| Trend research | TikTokApi (Python) + Google Trends | Free |
+| Script generation | GPT-4o or Gemini 2.5 Flash | ~$0.01/script |
+| Image generation | Pollinations (free) or gpt-image-1 | Free–$0.04/image |
+| Video storyboard | sahil0202/Youtube_Automation (modified) | Free |
+| AI video (optional) | Wan 2.2 self-hosted | GPU cost only |
+| TTS / voice | Chatterbox (self-hosted) or Fish Audio | Free–$15/mo |
+| Subtitles | Whisper (open source) | Free |
+| Scheduling | BullMQ + Redis | Free (self-hosted) |
+| TikTok publishing | Postiz or Zernio API wrapper | $10–20/mo |
+| Analytics | TikTok Research API + SQLite | Free |
+| Orchestration | n8n (self-hosted) | Free |
+
+Total estimated monthly cost for 5 videos/day: **$25–50**
