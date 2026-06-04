@@ -1,0 +1,73 @@
+2026-06-04 10:40:30.276 | INFO     | __main__:run:68 - === Starting pipeline for: ben10.mp4 ===
+2026-06-04 10:40:30.308 | INFO     | __main__:run:76 - [1/5] Extracting audio...
+2026-06-04 10:40:30.505 | INFO     | __main__:extract_audio:41 - Audio extracted: temp\audio\ben10.wav
+2026-06-04 10:40:30.505 | INFO     | __main__:run:80 - [2/5] Transcribing with Whisper...
+2026-06-04 10:40:30.505 | INFO     | modules.transcriber:_get_model:11 - Loading Whisper 'medium' on cpu (int8)
+2026-06-04 10:44:35.108 | INFO     | modules.transcriber:transcribe:26 - Detected language: en (100%)
+2026-06-04 10:45:12.837 | INFO     | __main__:run:82 -       19 segments transcribed
+2026-06-04 10:45:12.837 | INFO     | __main__:run:85 - [3/5] Scoring viral moments...
+2026-06-04 10:45:12.840 | INFO     | modules.viral_detector:detect_viral_moments:99 - Scanning 78s video with 30s windows...
+2026-06-04 10:45:31.677 | INFO     | modules.viral_detector:_get_sentiment:12 - Loading sentiment model (first run downloads ~500MB)...
+2026-06-04 10:46:56.986 | INFO     | modules.viral_detector:detect_viral_moments:135 -   Moment 1: 45s–75s | score=0.458
+2026-06-04 10:46:56.987 | INFO     | modules.viral_detector:detect_viral_moments:135 -   Moment 2: 0s–30s | score=0.445
+2026-06-04 10:46:56.987 | INFO     | __main__:run:89 - [3b]  Tracking faces for auto-crop...
+2026-06-04 10:51:50.098 | INFO     | __main__:run:68 - === Starting pipeline for: ben10.mp4 ===
+2026-06-04 10:51:50.107 | INFO     | __main__:run:76 - [1/5] Extracting audio...
+2026-06-04 10:51:50.243 | INFO     | __main__:extract_audio:41 - Audio extracted: temp\audio\ben10.wav
+2026-06-04 10:51:50.244 | INFO     | __main__:run:80 - [2/5] Transcribing with Whisper...
+2026-06-04 10:51:50.244 | INFO     | modules.transcriber:_get_model:11 - Loading Whisper 'medium' on cpu (int8)
+2026-06-04 10:51:58.556 | INFO     | modules.transcriber:transcribe:26 - Detected language: en (100%)
+2026-06-04 10:52:36.390 | INFO     | __main__:run:82 -       19 segments transcribed
+2026-06-04 10:52:36.390 | INFO     | __main__:run:85 - [3/5] Scoring viral moments...
+2026-06-04 10:52:36.390 | INFO     | modules.viral_detector:detect_viral_moments:99 - Scanning 78s video with 30s windows...
+2026-06-04 10:52:38.723 | INFO     | modules.viral_detector:_get_sentiment:12 - Loading sentiment model (first run downloads ~500MB)...
+2026-06-04 10:52:40.148 | INFO     | modules.viral_detector:detect_viral_moments:135 -   Moment 1: 45s–75s | score=0.458
+2026-06-04 10:52:40.148 | INFO     | modules.viral_detector:detect_viral_moments:135 -   Moment 2: 0s–30s | score=0.445
+2026-06-04 10:52:40.149 | INFO     | __main__:run:89 - [3b]  Tracking faces for auto-crop...
+2026-06-04 10:52:41.464 | INFO     | modules.face_tracker:track_faces:45 -   Moment 1 crop: x=0 w=607 [face-centered]
+2026-06-04 10:52:42.468 | INFO     | modules.face_tracker:track_faces:45 -   Moment 2 crop: x=338 w=607 [face-centered]
+2026-06-04 10:52:42.484 | INFO     | __main__:run:93 - [4/5] Cutting and encoding 9:16 clips...
+2026-06-04 10:52:42.485 | INFO     | modules.clip_cutter:cut_clips:41 -   Cutting clip 1: 45.0s–75.0s
+2026-06-04 10:52:50.583 | INFO     | modules.clip_cutter:cut_clips:47 -   Saved: ben10_clip01.mp4
+2026-06-04 10:52:50.583 | INFO     | modules.clip_cutter:cut_clips:41 -   Cutting clip 2: 0.0s–30.0s
+2026-06-04 10:52:59.172 | INFO     | modules.clip_cutter:cut_clips:47 -   Saved: ben10_clip02.mp4
+2026-06-04 10:52:59.173 | INFO     | __main__:run:97 - [5/5] Burning subtitles...
+2026-06-04 10:53:08.250 | INFO     | modules.subtitle_gen:generate_subtitles:78 -   Subtitles burned: ben10_clip01.mp4
+2026-06-04 10:53:16.758 | INFO     | modules.subtitle_gen:generate_subtitles:78 -   Subtitles burned: ben10_clip02.mp4
+2026-06-04 10:53:16.765 | INFO     | modules.dedup_checker:mark_processed:50 - Marked as processed in DB: ben10.mp4
+2026-06-04 10:53:16.766 | SUCCESS  | __main__:run:104 - Done! 2 clips saved to output/
+2026-06-04 10:53:16.767 | SUCCESS  | __main__:run:106 -   Clip 1: ben10_clip01.mp4
+2026-06-04 10:53:16.767 | SUCCESS  | __main__:run:106 -   Clip 2: ben10_clip02.mp4
+2026-06-04 11:00:57.811 | INFO     | __main__:run:68 - === Starting pipeline for: mrbeast.mp4 ===
+2026-06-04 11:00:57.820 | INFO     | __main__:run:76 - [1/5] Extracting audio...
+2026-06-04 11:00:59.308 | INFO     | __main__:extract_audio:41 - Audio extracted: temp\audio\mrbeast.wav
+2026-06-04 11:00:59.308 | INFO     | __main__:run:80 - [2/5] Transcribing with Whisper...
+2026-06-04 11:00:59.308 | INFO     | modules.transcriber:_get_model:11 - Loading Whisper 'medium' on cpu (int8)
+2026-06-04 11:01:09.367 | INFO     | modules.transcriber:transcribe:26 - Detected language: en (100%)
+2026-06-04 11:38:51.778 | INFO     | __main__:run:82 -       1413 segments transcribed
+2026-06-04 11:38:51.780 | INFO     | __main__:run:85 - [3/5] Scoring viral moments...
+2026-06-04 11:38:51.781 | INFO     | modules.viral_detector:detect_viral_moments:99 - Scanning 2576s video with 30s windows...
+2026-06-04 11:38:55.993 | INFO     | modules.viral_detector:_get_sentiment:12 - Loading sentiment model (first run downloads ~500MB)...
+2026-06-04 11:39:11.668 | INFO     | modules.viral_detector:detect_viral_moments:135 -   Moment 1: 525s–555s | score=0.709
+2026-06-04 11:39:11.668 | INFO     | modules.viral_detector:detect_viral_moments:135 -   Moment 2: 1395s–1425s | score=0.702
+2026-06-04 11:39:11.669 | INFO     | modules.viral_detector:detect_viral_moments:135 -   Moment 3: 2310s–2340s | score=0.697
+2026-06-04 11:39:11.669 | INFO     | __main__:run:89 - [3b]  Tracking faces for auto-crop...
+2026-06-04 11:39:12.208 | INFO     | modules.face_tracker:track_faces:45 -   Moment 1 crop: x=117 w=202 [face-centered]
+2026-06-04 11:39:12.436 | INFO     | modules.face_tracker:track_faces:45 -   Moment 2 crop: x=188 w=202 [face-centered]
+2026-06-04 11:39:12.697 | INFO     | modules.face_tracker:track_faces:45 -   Moment 3 crop: x=226 w=202 [face-centered]
+2026-06-04 11:39:12.708 | INFO     | __main__:run:93 - [4/5] Cutting and encoding 9:16 clips...
+2026-06-04 11:39:12.708 | INFO     | modules.clip_cutter:cut_clips:41 -   Cutting clip 1: 525.0s–555.0s
+2026-06-04 11:39:24.699 | INFO     | modules.clip_cutter:cut_clips:47 -   Saved: mrbeast_clip01.mp4
+2026-06-04 11:39:24.699 | INFO     | modules.clip_cutter:cut_clips:41 -   Cutting clip 2: 1395.0s–1425.0s
+2026-06-04 11:39:37.608 | INFO     | modules.clip_cutter:cut_clips:47 -   Saved: mrbeast_clip02.mp4
+2026-06-04 11:39:37.608 | INFO     | modules.clip_cutter:cut_clips:41 -   Cutting clip 3: 2310.0s–2340.0s
+2026-06-04 11:39:50.670 | INFO     | modules.clip_cutter:cut_clips:47 -   Saved: mrbeast_clip03.mp4
+2026-06-04 11:39:50.670 | INFO     | __main__:run:97 - [5/5] Burning subtitles...
+2026-06-04 11:40:01.618 | INFO     | modules.subtitle_gen:generate_subtitles:78 -   Subtitles burned: mrbeast_clip01.mp4
+2026-06-04 11:40:13.662 | INFO     | modules.subtitle_gen:generate_subtitles:78 -   Subtitles burned: mrbeast_clip02.mp4
+2026-06-04 11:40:26.663 | INFO     | modules.subtitle_gen:generate_subtitles:78 -   Subtitles burned: mrbeast_clip03.mp4
+2026-06-04 11:40:26.670 | INFO     | modules.dedup_checker:mark_processed:50 - Marked as processed in DB: mrbeast.mp4
+2026-06-04 11:40:26.679 | SUCCESS  | __main__:run:104 - Done! 3 clips saved to output/
+2026-06-04 11:40:26.679 | SUCCESS  | __main__:run:106 -   Clip 1: mrbeast_clip01.mp4
+2026-06-04 11:40:26.679 | SUCCESS  | __main__:run:106 -   Clip 2: mrbeast_clip02.mp4
+2026-06-04 11:40:26.680 | SUCCESS  | __main__:run:106 -   Clip 3: mrbeast_clip03.mp4
