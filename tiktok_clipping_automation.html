@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TikTok Viral Clip Pipeline — Complete Guide</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.7;color:#1a1a1a;background:#f5f5f2;max-width:980px;margin:0 auto;padding:0 16px 60px}
+nav{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid #e0ded8;display:flex;gap:4px;flex-wrap:wrap;padding:10px 16px;margin:0 -16px 0}
+nav button{font-size:12px;padding:5px 12px;border-radius:20px;border:1px solid #d0cec8;background:transparent;color:#666;cursor:pointer;transition:all .15s;font-family:inherit;white-space:nowrap}
+nav button:hover{background:#f0ede8;color:#1a1a1a}
+nav button.active{background:#1a1a1a;color:#fff;border-color:#1a1a1a}
+.page{display:none;padding-top:24px}
+.page.active{display:block}
+h1{font-size:26px;font-weight:600;margin-bottom:6px;color:#1a1a1a}
+h2{font-size:18px;font-weight:600;margin:2rem 0 .7rem;padding-bottom:6px;border-bottom:1.5px solid #e0ded8;color:#1a1a1a}
+h3{font-size:15px;font-weight:600;margin:1.3rem 0 .4rem;color:#1a1a1a}
+p{margin-bottom:.8rem;color:#444}
+p strong{color:#1a1a1a}
+a{color:#2563eb}
+
+.hero{background:linear-gradient(135deg,#0f172a,#1e3a5f);border-radius:14px;padding:28px 32px;margin-bottom:24px;color:#fff}
+.hero .tag{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;background:rgba(255,255,255,.15);padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:12px}
+.hero h1{color:#fff;font-size:24px;margin-bottom:8px}
+.hero p{color:rgba(255,255,255,.75);margin:0}
+
+.grid-3{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin:1rem 0}
+.card{background:#fff;border:1px solid #e0ded8;border-radius:12px;padding:14px 16px;cursor:pointer;transition:border-color .15s,box-shadow .15s}
+.card:hover{border-color:#aaa;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.card .num{font-size:11px;font-weight:600;color:#2563eb;margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}
+.card .title{font-size:13px;font-weight:600;color:#1a1a1a}
+.card .sub{font-size:12px;color:#888;margin-top:2px}
+
+.metric-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin:1rem 0}
+.metric{background:#fff;border:1px solid #e0ded8;border-radius:10px;padding:12px 14px}
+.metric .label{font-size:11px;color:#888;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em}
+.metric .val{font-size:15px;font-weight:600;color:#1a1a1a}
+.metric .sub{font-size:11px;color:#aaa;margin-top:2px}
+
+.cmd{background:#0f172a;border-radius:10px;padding:16px 18px;margin:10px 0;font-family:'Courier New',monospace;font-size:13px;color:#e2e8f0;line-height:1.8;overflow-x:auto;white-space:pre}
+.cmd .cm{color:#64748b}
+.cmd .kw{color:#7dd3fc}
+.cmd .ok{color:#86efac}
+
+.code-wrap{margin:12px 0;border:1px solid #e0ded8;border-radius:10px;overflow:hidden}
+.code-head{display:flex;align-items:center;gap:8px;padding:8px 14px;background:#f8f7f4;border-bottom:1px solid #e0ded8;font-size:12px;font-weight:600;color:#666}
+.code-head span{font-size:15px}
+.code-body{background:#0f172a;padding:16px 18px;font-family:'Courier New',monospace;font-size:12.5px;line-height:1.8;color:#e2e8f0;overflow-x:auto;white-space:pre}
+.kw{color:#c084fc}.fn{color:#7dd3fc}.str{color:#86efac}.cm{color:#64748b}.num{color:#fbbf24}.op{color:#f472b6}
+
+.badge{display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;margin:0 2px}
+.b-free{background:#dcfce7;color:#166534}
+.b-paid{background:#fef3c7;color:#92400e}
+.b-opt{background:#f0f0ee;color:#666;border:1px solid #e0ded8}
+.b-req{background:#fee2e2;color:#991b1b}
+
+.tool-list{background:#fff;border:1px solid #e0ded8;border-radius:10px;overflow:hidden;margin:1rem 0}
+.tool-row{display:flex;align-items:flex-start;gap:12px;padding:11px 16px;border-bottom:1px solid #f0ede8}
+.tool-row:last-child{border-bottom:none}
+.tool-name{font-size:13px;font-weight:600;min-width:200px;color:#1a1a1a}
+.tool-desc{flex:1;font-size:12.5px;color:#555}
+.tool-cost{font-size:12px;font-weight:600;color:#888;min-width:90px;text-align:right}
+
+table{width:100%;border-collapse:collapse;font-size:13px;margin:1rem 0;background:#fff;border-radius:10px;overflow:hidden;border:1px solid #e0ded8}
+th{text-align:left;padding:9px 14px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:#888;border-bottom:1px solid #e0ded8;background:#f8f7f4}
+td{padding:9px 14px;border-bottom:1px solid #f5f3f0;color:#555}
+td:first-child{color:#1a1a1a;font-weight:500}
+tr:last-child td{border-bottom:none}
+.free-v{color:#166534;font-weight:600}
+.paid-v{color:#92400e;font-weight:600}
+
+.alert{border-radius:8px;padding:11px 14px;font-size:13px;margin:1rem 0}
+.alert-info{background:#eff6ff;border:1px solid #bfdbfe;color:#1e40af}
+.alert-ok{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534}
+.alert-warn{background:#fffbeb;border:1px solid #fde68a;color:#92400e}
+
+ul.cl{list-style:none;padding:0;margin:.5rem 0 1rem}
+ul.cl li{padding:4px 0 4px 22px;font-size:13px;color:#555;position:relative}
+ul.cl li::before{content:"→";position:absolute;left:0;color:#aaa}
+ul.cl li strong{color:#1a1a1a}
+
+.folder{background:#0f172a;border-radius:10px;padding:16px 18px;margin:12px 0;font-family:'Courier New',monospace;font-size:13px;color:#94a3b8;line-height:1.9;overflow-x:auto;white-space:pre}
+.folder .hl{color:#7dd3fc}
+.folder .cm{color:#475569}
+
+/* Workflow SVG area */
+.svg-wrap{background:#fff;border:1px solid #e0ded8;border-radius:12px;padding:20px;margin:1rem 0;overflow-x:auto}
+
+.intro{font-size:14px;color:#666;margin-bottom:1.2rem;padding-bottom:12px;border-bottom:1px solid #f0ede8}
+</style>
+</head>
+<body>
+
+<nav id="mainnav">
+  <button class="active" onclick="go('overview',this)">🗺 Overview</button>
+  <button onclick="go('install',this)">⚙️ Windows Setup</button>
+  <button onclick="go('tools',this)">🔧 Tools & APIs</button>
+  <button onclick="go('structure',this)">📁 Architecture</button>
+  <button onclick="go('pipeline',this)">🐍 Pipeline Code</button>
+  <button onclick="go('ai',this)">🤖 AI Models</button>
+  <button onclick="go('dedup',this)">🔁 Dedup & Scale</button>
+  <button onclick="go('costs',this)">💰 Costs</button>
+  <button onclick="go('workflow',this)">📊 Flow Diagram</button>
+</nav>
+
+<!-- ═══════════════ OVERVIEW ═══════════════ -->
+<div class="page active" id="overview">
+  <div class="hero">
+    <span class="tag">End-to-End Automation Guide</span>
+    <h1>TikTok Viral Clip Pipeline</h1>
+    <p>From a fresh Windows install to a fully edited, subtitled, 9:16 TikTok-ready clip — with zero manual editing. Every tool, script, command and cost included.</p>
+  </div>
+
+  <h2>What This Pipeline Does</h2>
+  <p>Takes any long-form video (podcast, stream, interview, lecture) and automatically: extracts audio → transcribes with Whisper → scores segments for viral potential → detects and tracks the speaker's face → crops to vertical 9:16 → burns word-by-word captions → exports a ready-to-upload clip.</p>
+
+  <div class="grid-3">
+    <div class="card" onclick="go('install',null)"><div class="num">Phase 1</div><div class="title">Windows Setup</div><div class="sub">Python, FFmpeg, CUDA, env</div></div>
+    <div class="card" onclick="go('tools',null)"><div class="num">Phase 2</div><div class="title">Tools & APIs</div><div class="sub">Free + paid options</div></div>
+    <div class="card" onclick="go('structure',null)"><div class="num">Phase 3</div><div class="title">Project Structure</div><div class="sub">Folders, modules, config</div></div>
+    <div class="card" onclick="go('pipeline',null)"><div class="num">Phase 4</div><div class="title">Pipeline Code</div><div class="sub">Full Python scripts</div></div>
+    <div class="card" onclick="go('ai',null)"><div class="num">Phase 5</div><div class="title">AI Models</div><div class="sub">Detection, subs, analysis</div></div>
+    <div class="card" onclick="go('dedup',null)"><div class="num">Phase 6</div><div class="title">Dedup & Scale</div><div class="sub">No duplicates, bulk jobs</div></div>
+  </div>
+
+  <h2>Technology Stack</h2>
+  <div class="metric-row">
+    <div class="metric"><div class="label">Video Processing</div><div class="val">FFmpeg</div><div class="sub">Free, open-source</div></div>
+    <div class="metric"><div class="label">Transcription</div><div class="val">Whisper</div><div class="sub">Free, local</div></div>
+    <div class="metric"><div class="label">Viral Scoring</div><div class="val">librosa + RoBERTa</div><div class="sub">Free, local</div></div>
+    <div class="metric"><div class="label">Face Tracking</div><div class="val">MediaPipe</div><div class="sub">Free, Google</div></div>
+    <div class="metric"><div class="label">LLM Scoring</div><div class="val">Ollama / GPT-4o</div><div class="sub">Free local or $0.001/clip</div></div>
+    <div class="metric"><div class="label">Subtitles</div><div class="val">Whisper + FFmpeg</div><div class="sub">Free, burned in</div></div>
+  </div>
+
+  <div class="alert alert-ok"><strong>Total cost estimate:</strong> $0–$0.50 per 100 videos using free/local models. Adding GPT-4o-mini for better viral scoring adds roughly $0.001 per clip.</div>
+
+  <h2>Final Output</h2>
+  <ul class="cl">
+    <li>1080×1920 MP4 (TikTok native resolution)</li>
+    <li>Auto-cropped to speaker's face using MediaPipe</li>
+    <li>Bold word-by-word captions burned directly into video</li>
+    <li>Top 3 (configurable) highest-scoring viral moments per source video</li>
+    <li>Duplicate prevention so no clip is produced twice</li>
+    <li>Runs fully unattended via Windows Task Scheduler</li>
+  </ul>
+</div>
+
+<!-- ═══════════════ INSTALL ═══════════════ -->
+<div class="page" id="install">
+  <p class="intro">Follow every step in order. Start from a completely fresh Windows 10 or 11 machine.</p>
+
+  <h2>Step 1 — Install Python 3.11</h2>
+  <p>Go to <strong>python.org/downloads</strong> and download Python <strong>3.11.x</strong> (not 3.12+ — better ML library compatibility). During install, tick <strong>"Add Python to PATH"</strong> before clicking Install Now.</p>
+  <div class="cmd"><span class="cm"># Open Command Prompt: press Win+R, type cmd, press Enter</span>
+python --version
+<span class="cm"># Expected output: Python 3.11.x</span>
+pip --version
+<span class="cm"># Expected output: pip 23.x from ...Python311...</span></div>
+
+  <h2>Step 2 — Install Git</h2>
+  <p>Download from <strong>git-scm.com</strong>. Accept all default settings. This also installs Git Bash.</p>
+  <div class="cmd">git --version
+<span class="cm"># Expected: git version 2.x.x.windows.x</span></div>
+
+  <h2>Step 3 — Install FFmpeg</h2>
+  <p>FFmpeg handles all video cutting, cropping, encoding and subtitle burning. It is the backbone of the whole pipeline.</p>
+  <div class="cmd"><span class="cm"># Open PowerShell as Administrator: right-click Start → "Windows Terminal (Admin)"</span>
+winget install Gyan.FFmpeg
+
+<span class="cm"># If winget fails, manually:
+# 1. Go to ffmpeg.org/download.html → Windows → gyan.dev builds → full build
+# 2. Extract to C:\ffmpeg\
+# 3. Add C:\ffmpeg\bin to PATH:
+#    System Properties → Advanced → Environment Variables → Path → New → C:\ffmpeg\bin</span>
+
+<span class="cm"># Verify (open a NEW Command Prompt after install)</span>
+ffmpeg -version
+<span class="cm"># Expected: ffmpeg version 6.x or higher</span></div>
+
+  <h2>Step 4 — Install CUDA (Optional, NVIDIA GPUs Only)</h2>
+  <p>Makes Whisper transcription 10x faster. Skip if you have no NVIDIA GPU. Check yours with <strong>Win+R → dxdiag → Display tab</strong>.</p>
+  <div class="cmd"><span class="cm"># Only for NVIDIA GPU owners:
+# 1. Download CUDA Toolkit 11.8: developer.nvidia.com/cuda-11-8-0-download-archive
+# 2. Download cuDNN (free account): developer.nvidia.com/cudnn
+# 3. Run both installers with default settings</span>
+
+nvidia-smi
+<span class="cm"># Should display your GPU model, driver version, CUDA version</span></div>
+
+  <h2>Step 5 — Create the Project Folder and Virtual Environment</h2>
+  <div class="cmd"><span class="cm"># In Command Prompt (regular, not admin)</span>
+mkdir C:\clipbot
+cd C:\clipbot
+
+python -m venv venv
+
+<span class="cm"># Activate the virtual environment</span>
+venv\Scripts\activate
+<span class="cm"># Your prompt should now start with (venv)</span>
+
+python -m pip install --upgrade pip</div>
+
+  <h2>Step 6 — Install All Python Dependencies</h2>
+  <p>Run these one group at a time. Each group may take 1–5 minutes to download.</p>
+  <div class="cmd"><span class="cm"># Make sure (venv) is active before running these</span>
+
+<span class="cm"># Video and audio processing</span>
+pip install ffmpeg-python moviepy==1.0.3 pydub
+
+<span class="cm"># AI transcription — runs 100% locally, no API needed</span>
+pip install faster-whisper
+
+<span class="cm"># Face detection for auto-reframing</span>
+pip install mediapipe opencv-python-headless
+
+<span class="cm"># Audio signal analysis (detect loud/exciting moments)</span>
+pip install librosa scipy numpy
+
+<span class="cm"># Local NLP / sentiment — runs 100% locally</span>
+<span class="cm"># If you have an NVIDIA CUDA GPU:</span>
+pip install transformers torch --index-url https://download.pytorch.org/whl/cu118
+<span class="cm"># If you have NO GPU (CPU only):</span>
+pip install transformers torch
+
+<span class="cm"># Optional: OpenAI API for GPT-4o-mini scoring (~$0.001/clip)</span>
+pip install openai
+
+<span class="cm"># Subtitle file handling</span>
+pip install srt
+
+<span class="cm"># Database for deduplication</span>
+pip install sqlalchemy
+
+<span class="cm"># Perceptual hashing for visual dedup</span>
+pip install imagehash Pillow
+
+<span class="cm"># Utilities: progress bars, logging, config, CLI</span>
+pip install tqdm python-dotenv loguru rich click requests</div>
+
+  <h2>Step 7 — Create the .env Configuration File</h2>
+  <p>In <strong>C:\clipbot\</strong>, create a file called exactly <strong>.env</strong> (no extension) with this content. You can open Notepad, paste it, then Save As → "All Files" → name it .env</p>
+  <div class="code-wrap">
+    <div class="code-head"><span>📄</span> C:\clipbot\.env</div>
+    <div class="code-body"><span class="cm"># === OPTIONAL: Only needed if you want GPT-4o-mini viral scoring ===</span>
+OPENAI_API_KEY=sk-your-key-here
+
+<span class="cm"># === OPTIONAL: AssemblyAI cloud transcription (alternative to Whisper) ===</span>
+ASSEMBLYAI_API_KEY=your-key-here
+
+<span class="cm"># === Whisper model size (choose one) ===</span>
+<span class="cm"># tiny   = 39 MB,  fastest, least accurate</span>
+<span class="cm"># base   = 74 MB,  fast, decent accuracy</span>
+<span class="cm"># small  = 244 MB, good balance</span>
+<span class="cm"># medium = 769 MB, RECOMMENDED (best free balance)</span>
+<span class="cm"># large-v3 = 3 GB, most accurate, needs 10GB VRAM or slow on CPU</span>
+WHISPER_MODEL=medium
+
+<span class="cm"># === GPU usage ===</span>
+<span class="cm"># Set to true ONLY if you have an NVIDIA GPU with CUDA installed</span>
+USE_GPU=false
+
+<span class="cm"># === Output folder ===</span>
+OUTPUT_DIR=C:/clipbot/output
+
+<span class="cm"># === Clip settings ===</span>
+MIN_CLIP_SECONDS=30
+MAX_CLIP_SECONDS=90
+CLIPS_PER_VIDEO=3
+
+<span class="cm"># === Optional: use local Ollama LLM instead of GPT-4o ===</span>
+USE_LOCAL_LLM=false</div>
+  </div>
+
+  <h2>Step 8 — Verify Everything Works</h2>
+  <div class="cmd"><span class="cm"># Test FFmpeg — creates a 5 second test video</span>
+ffmpeg -f lavfi -i testsrc=duration=5:size=1280x720:rate=30 C:\clipbot\test.mp4 -y
+<span class="cm"># Should create test.mp4 with no errors</span>
+
+<span class="cm"># Test faster-whisper — downloads model on first run (~769MB for medium)</span>
+python -c "from faster_whisper import WhisperModel; m=WhisperModel('base',device='cpu',compute_type='int8'); print('Whisper OK')"
+
+<span class="cm"># Test MediaPipe</span>
+python -c "import mediapipe as mp; print('MediaPipe OK')"
+
+<span class="cm"># Test librosa</span>
+python -c "import librosa; print('librosa OK')"
+
+<span class="cm"># Test transformers (downloads ~500MB sentiment model on first run)</span>
+python -c "from transformers import pipeline; print('Transformers OK')"</div>
+
+  <div class="alert alert-ok">If all 5 checks print OK, your environment is ready. Proceed to build the pipeline.</div>
+</div>
+
+<!-- ═══════════════ TOOLS ═══════════════ -->
+<div class="page" id="tools">
+  <p class="intro">Every tool required, with free and paid alternatives clearly marked.</p>
+
+  <h2>Required Tools (All Free)</h2>
+  <div class="tool-list">
+    <div class="tool-row"><div class="tool-name">Python 3.11 <span class="badge b-free">FREE</span></div><div class="tool-desc">Core language. Use 3.11 for best ML library compatibility.</div><div class="tool-cost">$0</div></div>
+    <div class="tool-row"><div class="tool-name">FFmpeg <span class="badge b-free">FREE</span></div><div class="tool-desc">Video cutting, cropping to 9:16, encoding, subtitle burning. The single most important tool.</div><div class="tool-cost">$0</div></div>
+    <div class="tool-row"><div class="tool-name">faster-whisper <span class="badge b-free">FREE</span></div><div class="tool-desc">Local AI transcription. 4x faster than original Whisper. Word-level timestamps. Runs on CPU or GPU.</div><div class="tool-cost">$0</div></div>
+    <div class="tool-row"><div class="tool-name">MediaPipe <span class="badge b-free">FREE</span></div><div class="tool-desc">Google's framework for face detection and tracking. Used to auto-crop to speaker's face.</div><div class="tool-cost">$0</div></div>
+    <div class="tool-row"><div class="tool-name">librosa <span class="badge b-free">FREE</span></div><div class="tool-desc">Audio analysis library. Detects loud segments, applause, laughter, and energy spikes.</div><div class="tool-cost">$0</div></div>
+    <div class="tool-row"><div class="tool-name">HuggingFace Transformers <span class="badge b-free">FREE</span></div><div class="tool-desc">Run local NLP models. Used for sentiment/emotion scoring of transcript segments.</div><div class="tool-cost">$0</div></div>
+    <div class="tool-row"><div class="tool-name">Ollama <span class="badge b-free">FREE</span></div><div class="tool-desc">Run LLaMA 3.1 or Qwen2.5 locally for viral scoring. Free alternative to GPT-4o.</div><div class="tool-cost">$0</div></div>
+    <div class="tool-row"><div class="tool-name">MoviePy <span class="badge b-free">FREE</span></div><div class="tool-desc">Python video editing. Useful for programmatic compositing and overlays.</div><div class="tool-cost">$0</div></div>
+    <div class="tool-row"><div class="tool-name">SQLite <span class="badge b-free">FREE</span></div><div class="tool-desc">Built into Python. Stores processed video hashes to prevent duplicate processing.</div><div class="tool-cost">$0</div></div>
+  </div>
+
+  <h2>Optional Paid APIs</h2>
+  <div class="tool-list">
+    <div class="tool-row"><div class="tool-name">OpenAI GPT-4o-mini <span class="badge b-paid">PAID</span></div><div class="tool-desc">Best-in-class viral moment scoring. Understands humor, hooks, and narrative structure. ~$0.001 per clip scored. Get key at platform.openai.com</div><div class="tool-cost">~$0.10/100 clips</div></div>
+    <div class="tool-row"><div class="tool-name">AssemblyAI <span class="badge b-paid">PAID</span></div><div class="tool-desc">Cloud transcription. More accurate than Whisper for some accents. Has built-in "auto highlights" feature. Free tier: 100 hours. assemblyai.com</div><div class="tool-cost">$0.65/hr audio</div></div>
+    <div class="tool-row"><div class="tool-name">ElevenLabs <span class="badge b-opt">OPTIONAL</span></div><div class="tool-desc">AI voice-over for intro/outro narration. Free tier: 10,000 chars/month. elevenlabs.io</div><div class="tool-cost">Free tier / $5/mo</div></div>
+  </div>
+
+  <h2>Free vs Paid Comparison</h2>
+  <table>
+    <thead><tr><th>Task</th><th>Paid Option</th><th>Free Alternative</th></tr></thead>
+    <tbody>
+      <tr><td>Transcription</td><td>AssemblyAI $0.65/hr</td><td class="free-v">faster-whisper (local, free)</td></tr>
+      <tr><td>Viral scoring (LLM)</td><td>GPT-4o $0.001/clip</td><td class="free-v">Ollama + LLaMA 3.1 8B (local)</td></tr>
+      <tr><td>Subtitle styling</td><td>SubMagic $20/mo</td><td class="free-v">FFmpeg subtitles filter (free)</td></tr>
+      <tr><td>Auto-crop/reframe</td><td>Opus Clip $29/mo</td><td class="free-v">MediaPipe + FFmpeg (free)</td></tr>
+      <tr><td>Sentiment analysis</td><td>AWS Comprehend $0.0001/unit</td><td class="free-v">cardiffnlp/twitter-roberta (free)</td></tr>
+      <tr><td>Speaker diarization</td><td>Pyannote cloud $0.05/min</td><td class="free-v">pyannote.audio (open-source)</td></tr>
+      <tr><td>Task queue (scaling)</td><td>AWS SQS $0.40/million</td><td class="free-v">Redis + Celery (self-hosted)</td></tr>
+      <tr><td>Full pipeline SaaS</td><td>Opus Clip $29/mo</td><td class="free-v">This entire pipeline ($0)</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Required Accounts</h2>
+  <ul class="cl">
+    <li><strong>OpenAI (optional)</strong> — needed only for GPT-4o-mini scoring. Free to create at platform.openai.com. Pay as you go.</li>
+    <li><strong>HuggingFace (free)</strong> — needed to download some gated models (like pyannote speaker diarization). Create at huggingface.co</li>
+    <li><strong>AssemblyAI (optional)</strong> — only if choosing cloud transcription. Free tier: 100 hours. assemblyai.com</li>
+  </ul>
+
+  <div class="alert alert-info">You can run the complete pipeline with zero accounts and zero cost using only local tools: faster-whisper + librosa + cardiffnlp/roberta + MediaPipe + FFmpeg + Ollama.</div>
+</div>
+
+<!-- ═══════════════ STRUCTURE ═══════════════ -->
+<div class="page" id="structure">
+  <p class="intro">Complete folder layout and how every module connects.</p>
+
+  <h2>Folder Structure</h2>
+  <div class="folder"><span class="hl">C:\clipbot\</span>                        ← Project root
+├── <span class="hl">venv\</span>                          ← Python virtual environment (don't touch)
+├── <span class="hl">.env</span>                           ← API keys and settings (you edit this)
+├── <span class="hl">main.py</span>                        ← ENTRY POINT — run this to process a video
+├── <span class="hl">config.py</span>                      ← All settings loaded from .env
+│
+├── <span class="hl">input\</span>                         ← DROP YOUR SOURCE VIDEOS HERE
+│   └── my_podcast.mp4
+│
+├── <span class="hl">output\</span>                        ← FINAL TIKTOK CLIPS APPEAR HERE
+│   └── my_podcast_clip1.mp4
+│
+├── <span class="hl">temp\</span>                          ← Working files (auto-cleaned after each run)
+│   ├── audio\                     ← Extracted WAV audio files
+│   ├── frames\                    ← Sampled video frames for face detection
+│   └── clips\                     ← Intermediate cut clips before subtitle burn
+│
+├── <span class="hl">modules\</span>                       ← Pipeline modules (one file per stage)
+│   ├── __init__.py
+│   ├── transcriber.py             ← Stage 2: Whisper transcription
+│   ├── viral_detector.py          ← Stage 3: Moment scoring (audio + sentiment + LLM)
+│   ├── face_tracker.py            ← Stage 3b: MediaPipe face crop coordinates
+│   ├── clip_cutter.py             ← Stage 4: FFmpeg clip extraction + 9:16 crop
+│   ├── subtitle_gen.py            ← Stage 5: SRT generation + FFmpeg caption burn
+│   └── dedup_checker.py           ← Stage 0: Prevent reprocessing same video
+│
+├── <span class="hl">models\</span>                        ← Downloaded AI model cache (auto-populated)
+│   └── whisper\
+│
+├── <span class="hl">data\</span>
+│   └── processed.db               ← SQLite database of processed video hashes
+│
+└── <span class="hl">logs\</span>                          ← Loguru log files (one per day)</div>
+
+  <h2>config.py — Central Settings</h2>
+  <div class="code-wrap">
+    <div class="code-head"><span>🐍</span> config.py</div>
+    <div class="code-body"><span class="kw">from</span> dataclasses <span class="kw">import</span> dataclass, field
+<span class="kw">from</span> pathlib <span class="kw">import</span> Path
+<span class="kw">import</span> os
+<span class="kw">from</span> dotenv <span class="kw">import</span> load_dotenv
+
+load_dotenv()
+
+<span class="kw">@dataclass</span>
+<span class="kw">class</span> <span class="fn">Config</span>:
+    <span class="cm"># Paths</span>
+    input_dir:   Path = Path(<span class="str">"input"</span>)
+    output_dir:  Path = Path(<span class="str">"output"</span>)
+    temp_dir:    Path = Path(<span class="str">"temp"</span>)
+    db_path:     Path = Path(<span class="str">"data/processed.db"</span>)
+
+    <span class="cm"># Whisper</span>
+    whisper_model: str  = os.getenv(<span class="str">"WHISPER_MODEL"</span>, <span class="str">"medium"</span>)
+    use_gpu:       bool = os.getenv(<span class="str">"USE_GPU"</span>, <span class="str">"false"</span>).lower() == <span class="str">"true"</span>
+
+    <span class="cm"># Clip settings</span>
+    min_clip_duration: int = int(os.getenv(<span class="str">"MIN_CLIP_SECONDS"</span>, <span class="str">"30"</span>))
+    max_clip_duration: int = int(os.getenv(<span class="str">"MAX_CLIP_SECONDS"</span>, <span class="str">"90"</span>))
+    clips_per_video:   int = int(os.getenv(<span class="str">"CLIPS_PER_VIDEO"</span>, <span class="str">"3"</span>))
+    output_resolution: str = <span class="str">"1080x1920"</span>
+
+    <span class="cm"># Viral scoring weights (must sum to 1.0)</span>
+    audio_energy_weight: float = <span class="num">0.35</span>
+    sentiment_weight:    float = <span class="num">0.30</span>
+    llm_score_weight:    float = <span class="num">0.35</span>
+
+    <span class="cm"># Subtitle style</span>
+    subtitle_font:    str  = <span class="str">"Arial Bold"</span>
+    subtitle_size:    int  = <span class="num">18</span>
+    subtitle_outline: bool = True
+
+    <span class="cm"># API keys</span>
+    openai_key:    str = os.getenv(<span class="str">"OPENAI_API_KEY"</span>, <span class="str">""</span>)
+    use_local_llm: bool = os.getenv(<span class="str">"USE_LOCAL_LLM"</span>, <span class="str">"false"</span>).lower() == <span class="str">"true"</span>
+
+
+<span class="kw">@dataclass</span>
+<span class="kw">class</span> <span class="fn">JobContext</span>:
+    <span class="cm">"""Shared state object passed between all pipeline stages."""</span>
+    video_path:    Path = <span class="kw">None</span>
+    audio_path:    Path = <span class="kw">None</span>
+    transcript:    list = field(default_factory=list)    <span class="cm"># [{start,end,text,words}]</span>
+    viral_moments: list = field(default_factory=list)    <span class="cm"># [{start,end,score,text}]</span>
+    face_regions:  dict = field(default_factory=dict)    <span class="cm"># {moment_idx: (x,y,w,h)}</span>
+    output_clips:  list = field(default_factory=list)    <span class="cm"># [Path, ...]</span>
+    video_hash:    str  = <span class="str">""</span></div>
+  </div>
+
+  <h2>Module Communication</h2>
+  <p>Every module is stateless. They all receive a <strong>JobContext</strong> and a <strong>Config</strong>, mutate the context, and return it. No module imports another — <strong>main.py</strong> owns the sequence.</p>
+  <table>
+    <thead><tr><th>Stage</th><th>Module</th><th>Reads from ctx</th><th>Writes to ctx</th></tr></thead>
+    <tbody>
+      <tr><td>0 – Dedup check</td><td>dedup_checker.py</td><td>video_path</td><td>video_hash</td></tr>
+      <tr><td>1 – Audio extract</td><td>main.py (inline)</td><td>video_path</td><td>audio_path</td></tr>
+      <tr><td>2 – Transcribe</td><td>transcriber.py</td><td>audio_path</td><td>transcript</td></tr>
+      <tr><td>3 – Viral score</td><td>viral_detector.py</td><td>transcript + audio_path</td><td>viral_moments</td></tr>
+      <tr><td>3b – Face track</td><td>face_tracker.py</td><td>video_path + viral_moments</td><td>face_regions</td></tr>
+      <tr><td>4 – Cut clips</td><td>clip_cutter.py</td><td>viral_moments + face_regions</td><td>output_clips</td></tr>
+      <tr><td>5 – Subtitles</td><td>subtitle_gen.py</td><td>transcript + output_clips + viral_moments</td><td>(overwrites clips)</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════ PIPELINE CODE ═══════════════ -->
+<div class="page" id="pipeline">
+  <p class="intro">Complete, copy-paste-ready Python scripts. Create each file in C:\clipbot\ exactly as shown.</p>
+
+  <h2>main.py — Pipeline Orchestrator</h2>
+  <div class="code-wrap">
+    <div class="code-head"><span>▶️</span> C:\clipbot\main.py</div>
+    <div class="code-body"><span class="cm">#!/usr/bin/env python
+# main.py — TikTok Viral Clip Pipeline Orchestrator
+# Usage: python main.py input\video.mp4
+# Usage: python main.py input\video.mp4 --clips 5</span>
+
+<span class="kw">from</span> pathlib <span class="kw">import</span> Path
+<span class="kw">from</span> loguru <span class="kw">import</span> logger
+<span class="kw">import</span> subprocess, sys, shutil
+<span class="kw">import</span> click
+
+<span class="kw">from</span> config <span class="kw">import</span> Config, JobContext
+<span class="kw">from</span> modules.transcriber    <span class="kw">import</span> transcribe
+<span class="kw">from</span> modules.viral_detector  <span class="kw">import</span> detect_viral_moments
+<span class="kw">from</span> modules.face_tracker    <span class="kw">import</span> track_faces
+<span class="kw">from</span> modules.clip_cutter     <span class="kw">import</span> cut_clips
+<span class="kw">from</span> modules.subtitle_gen    <span class="kw">import</span> generate_subtitles
+<span class="kw">from</span> modules.dedup_checker   <span class="kw">import</span> is_duplicate, mark_processed
+
+cfg = Config()
+
+<span class="cm"># Set up logging</span>
+logger.remove()
+logger.add(sys.stderr, format=<span class="str">"&lt;green&gt;{time:HH:mm:ss}&lt;/green&gt; | &lt;level&gt;{level: &lt;8}&lt;/level&gt; | {message}"</span>)
+logger.add(<span class="str">"logs/pipeline_{time:YYYY-MM-DD}.log"</span>, rotation=<span class="str">"1 day"</span>, retention=<span class="str">"7 days"</span>)
+Path(<span class="str">"logs"</span>).mkdir(exist_ok=True)
+
+
+<span class="kw">def</span> <span class="fn">extract_audio</span>(ctx: JobContext, cfg: Config) -> JobContext:
+    <span class="str">"""Extract mono 16kHz WAV from source video using FFmpeg."""</span>
+    out = cfg.temp_dir / <span class="str">"audio"</span> / (ctx.video_path.stem + <span class="str">".wav"</span>)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run([
+        <span class="str">"ffmpeg"</span>, <span class="str">"-i"</span>, str(ctx.video_path),
+        <span class="str">"-vn"</span>,              <span class="cm"># no video</span>
+        <span class="str">"-acodec"</span>, <span class="str">"pcm_s16le"</span>,
+        <span class="str">"-ar"</span>, <span class="str">"16000"</span>,    <span class="cm"># 16kHz sample rate (Whisper standard)</span>
+        <span class="str">"-ac"</span>, <span class="str">"1"</span>,         <span class="cm"># mono</span>
+        str(out), <span class="str">"-y"</span>
+    ], check=True, capture_output=True)
+    ctx.audio_path = out
+    logger.info(<span class="str">f"Audio extracted: {out}"</span>)
+    <span class="kw">return</span> ctx
+
+
+<span class="kw">def</span> <span class="fn">cleanup_temp</span>(ctx: JobContext, cfg: Config):
+    <span class="str">"""Delete temp files after successful processing."""</span>
+    <span class="kw">try</span>:
+        <span class="kw">if</span> ctx.audio_path <span class="kw">and</span> ctx.audio_path.exists():
+            ctx.audio_path.unlink()
+        frame_dir = cfg.temp_dir / <span class="str">"frames"</span>
+        <span class="kw">if</span> frame_dir.exists():
+            shutil.rmtree(frame_dir)
+    <span class="kw">except</span> Exception <span class="kw">as</span> e:
+        logger.warning(<span class="str">f"Cleanup error (non-fatal): {e}"</span>)
+
+
+<span class="kw">@click</span>.command()
+<span class="kw">@click</span>.argument(<span class="str">"video_path"</span>, type=click.Path(exists=True))
+<span class="kw">@click</span>.option(<span class="str">"--clips"</span>, default=cfg.clips_per_video, show_default=True,
+              help=<span class="str">"Number of viral clips to extract"</span>)
+<span class="kw">@click</span>.option(<span class="str">"--skip-dedup"</span>, is_flag=True, default=False,
+              help=<span class="str">"Force reprocess even if already in database"</span>)
+<span class="kw">def</span> <span class="fn">run</span>(video_path, clips, skip_dedup):
+    <span class="str">"""Process a video and output TikTok-ready viral clips."""</span>
+    cfg.clips_per_video = clips
+    ctx = JobContext(video_path=Path(video_path))
+
+    logger.info(<span class="str">f"=== Starting pipeline for: {ctx.video_path.name} ==="</span>)
+
+    <span class="cm"># Stage 0: Duplicate check</span>
+    <span class="kw">if not</span> skip_dedup <span class="kw">and</span> is_duplicate(ctx, cfg):
+        logger.warning(<span class="str">"Video already processed. Use --skip-dedup to force. Exiting."</span>)
+        <span class="kw">return</span>
+
+    <span class="cm"># Stage 1: Extract audio</span>
+    logger.info(<span class="str">"[1/5] Extracting audio..."</span>)
+    ctx = extract_audio(ctx, cfg)
+
+    <span class="cm"># Stage 2: Transcribe</span>
+    logger.info(<span class="str">"[2/5] Transcribing with Whisper..."</span>)
+    ctx = transcribe(ctx, cfg)
+    logger.info(<span class="str">f"      {len(ctx.transcript)} segments transcribed"</span>)
+
+    <span class="cm"># Stage 3: Detect viral moments</span>
+    logger.info(<span class="str">"[3/5] Scoring viral moments..."</span>)
+    ctx = detect_viral_moments(ctx, cfg)
+
+    <span class="cm"># Stage 3b: Track faces (runs in parallel with scoring in production)</span>
+    logger.info(<span class="str">"[3b]  Tracking faces for auto-crop..."</span>)
+    ctx = track_faces(ctx, cfg)
+
+    <span class="cm"># Stage 4: Cut and reframe clips</span>
+    logger.info(<span class="str">"[4/5] Cutting and encoding 9:16 clips..."</span>)
+    ctx = cut_clips(ctx, cfg)
+
+    <span class="cm"># Stage 5: Burn subtitles</span>
+    logger.info(<span class="str">"[5/5] Burning subtitles..."</span>)
+    ctx = generate_subtitles(ctx, cfg)
+
+    <span class="cm"># Mark as processed and clean up</span>
+    mark_processed(ctx, cfg)
+    cleanup_temp(ctx, cfg)
+
+    logger.success(<span class="str">f"Done! {len(ctx.output_clips)} clips saved to {cfg.output_dir}/"</span>)
+    <span class="kw">for</span> i, p <span class="kw">in</span> enumerate(ctx.output_clips):
+        logger.success(<span class="str">f"  Clip {i+1}: {p.name}"</span>)
+
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+    Path(<span class="str">"modules"</span>).mkdir(exist_ok=True)
+    Path(<span class="str">"modules/__init__.py"</span>).touch()
+    <span class="kw">for</span> d <span class="kw">in</span> [<span class="str">"input"</span>, <span class="str">"output"</span>, <span class="str">"temp/audio"</span>, <span class="str">"temp/frames"</span>, <span class="str">"data"</span>, <span class="str">"logs"</span>]:
+        Path(d).mkdir(parents=True, exist_ok=True)
+    run()</div>
+  </div>
+
+  <h2>modules/transcriber.py</h2>
+  <div class="code-wrap">
+    <div class="code-head"><span>🎙</span> C:\clipbot\modules\transcriber.py</div>
+    <div class="code-body"><span class="kw">from</span> faster_whisper <span class="kw">import</span> WhisperModel
+<span class="kw">from</span> loguru <span class="kw">import</span> logger
+
+_model = <span class="kw">None</span>   <span class="cm"># module-level cache — only loaded once per process</span>
+
+<span class="kw">def</span> <span class="fn">_get_model</span>(cfg):
+    <span class="kw">global</span> _model
+    <span class="kw">if</span> _model <span class="kw">is</span> <span class="kw">None</span>:
+        device       = <span class="str">"cuda"</span> <span class="kw">if</span> cfg.use_gpu <span class="kw">else</span> <span class="str">"cpu"</span>
+        compute_type = <span class="str">"float16"</span> <span class="kw">if</span> cfg.use_gpu <span class="kw">else</span> <span class="str">"int8"</span>
+        logger.info(<span class="str">f"Loading Whisper '{cfg.whisper_model}' on {device} ({compute_type})"</span>)
+        _model = WhisperModel(cfg.whisper_model, device=device, compute_type=compute_type)
+    <span class="kw">return</span> _model
+
+
+<span class="kw">def</span> <span class="fn">transcribe</span>(ctx, cfg):
+    model = _get_model(cfg)
+
+    segments_iter, info = model.transcribe(
+        str(ctx.audio_path),
+        beam_size=<span class="num">5</span>,
+        word_timestamps=<span class="kw">True</span>,   <span class="cm"># REQUIRED for word-level subtitles</span>
+        language=<span class="kw">None</span>            <span class="cm"># auto-detect language</span>
+    )
+
+    logger.info(<span class="str">f"Detected language: {info.language} ({info.language_probability:.0%})"</span>)
+
+    ctx.transcript = []
+    <span class="kw">for</span> seg <span class="kw">in</span> segments_iter:   <span class="cm"># iterator — streams segments as they complete</span>
+        ctx.transcript.append({
+            <span class="str">"start"</span>: seg.start,
+            <span class="str">"end"</span>:   seg.end,
+            <span class="str">"text"</span>:  seg.text.strip(),
+            <span class="str">"words"</span>: [
+                {<span class="str">"word"</span>: w.word, <span class="str">"start"</span>: w.start, <span class="str">"end"</span>: w.end, <span class="str">"prob"</span>: w.probability}
+                <span class="kw">for</span> w <span class="kw">in</span> (seg.words <span class="kw">or</span> [])
+            ]
+        })
+
+    <span class="kw">return</span> ctx</div>
+  </div>
+
+  <h2>modules/viral_detector.py — The Scoring Engine</h2>
+  <div class="code-wrap">
+    <div class="code-head"><span>🔥</span> C:\clipbot\modules\viral_detector.py</div>
+    <div class="code-body"><span class="kw">import</span> numpy <span class="kw">as</span> np
+<span class="kw">import</span> librosa
+<span class="kw">from</span> transformers <span class="kw">import</span> pipeline
+<span class="kw">from</span> loguru <span class="kw">import</span> logger
+
+_sentiment_pipe = <span class="kw">None</span>
+
+<span class="kw">def</span> <span class="fn">_get_sentiment</span>():
+    <span class="kw">global</span> _sentiment_pipe
+    <span class="kw">if</span> _sentiment_pipe <span class="kw">is</span> <span class="kw">None</span>:
+        <span class="cm"># Runs 100% locally — no API needed. Downloads ~500MB on first run.</span>
+        logger.info(<span class="str">"Loading sentiment model (first run downloads ~500MB)..."</span>)
+        _sentiment_pipe = pipeline(
+            <span class="str">"text-classification"</span>,
+            model=<span class="str">"cardiffnlp/twitter-roberta-base-sentiment-latest"</span>,
+            top_k=<span class="kw">None</span>
+        )
+    <span class="kw">return</span> _sentiment_pipe
+
+
+<span class="kw">def</span> <span class="fn">score_audio_energy</span>(audio_path, start, end):
+    <span class="str">"""
+    Returns 0.0–1.0 based on RMS audio energy in the time window.
+    High energy = loud = reactions, applause, intense speech.
+    """</span>
+    y, sr = librosa.load(str(audio_path), sr=<span class="num">16000</span>, offset=start, duration=end-start)
+    <span class="kw">if</span> len(y) == <span class="num">0</span>: <span class="kw">return</span> <span class="num">0.0</span>
+    rms     = librosa.feature.rms(y=y)[<span class="num">0</span>]
+    <span class="cm"># Log scale normalization (matches human hearing perception)</span>
+    score   = float(np.mean(np.log1p(rms) / np.log1p(<span class="num">0.5</span>)))
+    <span class="kw">return</span> min(<span class="num">1.0</span>, max(<span class="num">0.0</span>, score))
+
+
+<span class="kw">def</span> <span class="fn">score_sentiment</span>(text):
+    <span class="str">"""
+    Returns 0.0–1.0 emotional intensity score.
+    Key insight: BOTH high-positive and high-negative go viral.
+    Neutral content scores low.
+    """</span>
+    <span class="kw">if not</span> text.strip(): <span class="kw">return</span> <span class="num">0.0</span>
+    pipe    = _get_sentiment()
+    results = pipe(text[:<span class="num">512</span>])[<span class="num">0</span>]
+    pos = next((r[<span class="str">"score"</span>] <span class="kw">for</span> r <span class="kw">in</span> results <span class="kw">if</span> r[<span class="str">"label"</span>] == <span class="str">"positive"</span>), <span class="num">0</span>)
+    neg = next((r[<span class="str">"score"</span>] <span class="kw">for</span> r <span class="kw">in</span> results <span class="kw">if</span> r[<span class="str">"label"</span>] == <span class="str">"negative"</span>), <span class="num">0</span>)
+    <span class="kw">return</span> max(pos, neg)
+
+
+<span class="kw">def</span> <span class="fn">score_with_gpt</span>(text, cfg):
+    <span class="str">"""GPT-4o-mini scoring (~$0.001 per clip). Falls back to 0.5 if no key."""</span>
+    <span class="kw">if not</span> cfg.openai_key: <span class="kw">return</span> <span class="num">0.5</span>
+    <span class="kw">from</span> openai <span class="kw">import</span> OpenAI
+    client = OpenAI(api_key=cfg.openai_key)
+    prompt = <span class="str">f"""You are a TikTok content strategist. Rate this transcript segment's
+viral potential from 0.0 to 1.0. Consider: strong hooks, emotional moments,
+surprising facts, humor, relatable situations, conflict/tension.
+Reply with ONLY a decimal number between 0.0 and 1.0.
+
+TRANSCRIPT:
+{text[:800]}"""</span>
+    <span class="kw">try</span>:
+        resp = client.chat.completions.create(
+            model=<span class="str">"gpt-4o-mini"</span>,
+            messages=[{<span class="str">"role"</span>: <span class="str">"user"</span>, <span class="str">"content"</span>: prompt}],
+            max_tokens=<span class="num">5</span>
+        )
+        <span class="kw">return</span> float(resp.choices[<span class="num">0</span>].message.content.strip())
+    <span class="kw">except</span>:
+        <span class="kw">return</span> <span class="num">0.5</span>
+
+
+<span class="kw">def</span> <span class="fn">score_with_ollama</span>(text):
+    <span class="str">"""Free local LLM scoring via Ollama. Requires 'ollama serve' running."""</span>
+    <span class="kw">import</span> requests
+    prompt = (<span class="str">f"Rate this clip 0.0-1.0 for TikTok virality. Only reply with a decimal number."</span>
+              <span class="str">f"\n\nTEXT: {text[:600]}"</span>)
+    <span class="kw">try</span>:
+        r = requests.post(<span class="str">"http://localhost:11434/api/generate"</span>,
+            json={<span class="str">"model"</span>: <span class="str">"llama3.1:8b"</span>, <span class="str">"prompt"</span>: prompt, <span class="str">"stream"</span>: <span class="kw">False</span>},
+            timeout=<span class="num">60</span>)
+        <span class="kw">return</span> float(r.json()[<span class="str">"response"</span>].strip())
+    <span class="kw">except</span>:
+        <span class="kw">return</span> <span class="num">0.5</span>
+
+
+<span class="kw">def</span> <span class="fn">detect_viral_moments</span>(ctx, cfg):
+    <span class="str">"""
+    Sliding window analysis over full transcript.
+    Scores each window with 3 signals, then selects top N non-overlapping clips.
+    """</span>
+    <span class="kw">if not</span> ctx.transcript:
+        logger.warning(<span class="str">"No transcript found — cannot score moments"</span>)
+        <span class="kw">return</span> ctx
+
+    total_dur = ctx.transcript[-<span class="num">1</span>][<span class="str">"end"</span>]
+    window    = cfg.min_clip_duration
+    step      = window // <span class="num">2</span>   <span class="cm"># 50% overlap between windows</span>
+    windows   = []
+
+    logger.info(<span class="str">f"Scanning {total_dur:.0f}s video with {window}s windows..."</span>)
+
+    <span class="kw">for</span> t_start <span class="kw">in</span> range(<span class="num">0</span>, int(total_dur - window), step):
+        t_end   = min(t_start + window, int(total_dur))
+        segs    = [s <span class="kw">for</span> s <span class="kw">in</span> ctx.transcript
+                   <span class="kw">if</span> s[<span class="str">"start"</span>] >= t_start <span class="kw">and</span> s[<span class="str">"end"</span>] <= t_end]
+        text    = <span class="str">" "</span>.join(s[<span class="str">"text"</span>] <span class="kw">for</span> s <span class="kw">in</span> segs)
+
+        audio_s = score_audio_energy(ctx.audio_path, t_start, t_end)
+        senti_s = score_sentiment(text)
+
+        <span class="kw">if</span> cfg.use_local_llm:
+            llm_s = score_with_ollama(text)
+        <span class="kw">else</span>:
+            llm_s = score_with_gpt(text, cfg)
+
+        score = (
+            cfg.audio_energy_weight * audio_s +
+            cfg.sentiment_weight    * senti_s +
+            cfg.llm_score_weight    * llm_s
+        )
+        windows.append({<span class="str">"start"</span>: t_start, <span class="str">"end"</span>: t_end,
+                        <span class="str">"score"</span>: score, <span class="str">"text"</span>: text})
+
+    <span class="cm"># Greedy non-overlapping selection</span>
+    windows.sort(key=<span class="kw">lambda</span> x: x[<span class="str">"score"</span>], reverse=<span class="kw">True</span>)
+    selected, used = [], []
+    <span class="kw">for</span> w <span class="kw">in</span> windows:
+        overlap = <span class="kw">any</span>(not (w[<span class="str">"end"</span>] <= u[<span class="str">"start"</span>] <span class="kw">or</span> w[<span class="str">"start"</span>] >= u[<span class="str">"end"</span>])
+                      <span class="kw">for</span> u <span class="kw">in</span> used)
+        <span class="kw">if not</span> overlap:
+            selected.append(w); used.append(w)
+        <span class="kw">if</span> len(selected) >= cfg.clips_per_video: <span class="kw">break</span>
+
+    ctx.viral_moments = selected
+    <span class="kw">for</span> i, m <span class="kw">in</span> enumerate(selected):
+        logger.info(<span class="str">f"  Moment {i+1}: {m['start']:.0f}s–{m['end']:.0f}s | score={m['score']:.3f}"</span>)
+    <span class="kw">return</span> ctx</div>
+  </div>
+
+  <h2>modules/face_tracker.py — Auto Reframe</h2>
+  <div class="code-wrap">
+    <div class="code-head"><span>👤</span> C:\clipbot\modules\face_tracker.py</div>
+    <div class="code-body"><span class="kw">import</span> cv2
+<span class="kw">import</span> mediapipe <span class="kw">as</span> mp
+<span class="kw">from</span> loguru <span class="kw">import</span> logger
+
+<span class="kw">def</span> <span class="fn">track_faces</span>(ctx, cfg):
+    <span class="str">"""
+    For each viral moment, sample 1 frame every 2 seconds.
+    Find average face center and compute 9:16 crop box around it.
+    Falls back to center crop if no face detected.
+    """</span>
+    cap = cv2.VideoCapture(str(ctx.video_path))
+    fps = cap.get(cv2.CAP_PROP_FPS) <span class="kw">or</span> <span class="num">30</span>
+    W   = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    H   = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+    face_det = mp.solutions.face_detection.FaceDetection(
+        model_selection=<span class="num">1</span>,             <span class="cm"># model 1 = better for full-body shots</span>
+        min_detection_confidence=<span class="num">0.5</span>
+    )
+
+    <span class="cm"># Desired output: 9:16. Compute crop width from video height.</span>
+    crop_w = int(H * <span class="num">9</span> / <span class="num">16</span>)
+    crop_w = min(crop_w, W)   <span class="cm"># can't crop wider than source</span>
+
+    face_data = {}
+
+    <span class="kw">for</span> idx, moment <span class="kw">in</span> enumerate(ctx.viral_moments):
+        centers = []
+        <span class="kw">for</span> t <span class="kw">in</span> range(int(moment[<span class="str">"start"</span>]), int(moment[<span class="str">"end"</span>]), <span class="num">2</span>):
+            cap.set(cv2.CAP_PROP_POS_FRAMES, int(t * fps))
+            ret, frame = cap.read()
+            <span class="kw">if not</span> ret: <span class="kw">continue</span>
+            results = face_det.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+            <span class="kw">if</span> results.detections:
+                b   = results.detections[<span class="num">0</span>].location_data.relative_bounding_box
+                cx  = (b.xmin + b.width / <span class="num">2</span>) * W
+                centers.append(cx)
+
+        avg_cx  = (sum(centers) / len(centers)) <span class="kw">if</span> centers <span class="kw">else</span> W / <span class="num">2</span>
+        crop_x  = int(avg_cx - crop_w / <span class="num">2</span>)
+        crop_x  = max(<span class="num">0</span>, min(crop_x, W - crop_w))
+
+        face_data[idx] = (crop_x, <span class="num">0</span>, crop_w, H)
+        src = <span class="str">"face-centered"</span> <span class="kw">if</span> centers <span class="kw">else</span> <span class="str">"center-fallback"</span>
+        logger.info(<span class="str">f"  Moment {idx+1} crop: x={crop_x} w={crop_w} [{src}]"</span>)
+
+    cap.release()
+    face_det.close()
+    ctx.face_regions = face_data
+    <span class="kw">return</span> ctx</div>
+  </div>
+
+  <h2>modules/clip_cutter.py — FFmpeg Clip Extraction</h2>
+  <div class="code-wrap">
+    <div class="code-head"><span>✂️</span> C:\clipbot\modules\clip_cutter.py</div>
+    <div class="code-body"><span class="kw">import</span> subprocess
+<span class="kw">from</span> pathlib <span class="kw">import</span> Path
+<span class="kw">from</span> loguru <span class="kw">import</span> logger
+
+<span class="kw">def</span> <span class="fn">cut_clips</span>(ctx, cfg):
+    cfg.output_dir.mkdir(parents=True, exist_ok=True)
+    ctx.output_clips = []
+
+    <span class="kw">for</span> idx, moment <span class="kw">in</span> enumerate(ctx.viral_moments):
+        crop   = ctx.face_regions.get(idx)
+        stem   = ctx.video_path.stem
+        out    = cfg.output_dir / <span class="str">f"{stem}_clip{idx+1:02d}.mp4"</span>
+
+        <span class="cm"># Build the FFmpeg video filter chain</span>
+        vf_parts = []
+        <span class="kw">if</span> crop:
+            x, y, w, h = crop
+            vf_parts.append(<span class="str">f"crop={w}:{h}:{x}:{y}"</span>)
+
+        <span class="cm"># Scale to TikTok native resolution</span>
+        vf_parts.append(<span class="str">"scale=1080:1920:flags=lanczos"</span>)
+        <span class="cm"># Sharpen slightly (optional but improves look after scale)</span>
+        vf_parts.append(<span class="str">"unsharp=5:5:0.8:3:3:0.4"</span>)
+        vf = <span class="str">","</span>.join(vf_parts)
+
+        cmd = [
+            <span class="str">"ffmpeg"</span>,
+            <span class="str">"-ss"</span>, str(moment[<span class="str">"start"</span>]),   <span class="cm"># start time</span>
+            <span class="str">"-to"</span>, str(moment[<span class="str">"end"</span>]),     <span class="cm"># end time</span>
+            <span class="str">"-i"</span>,  str(ctx.video_path),
+            <span class="str">"-vf"</span>, vf,
+            <span class="str">"-c:v"</span>, <span class="str">"libx264"</span>,
+            <span class="str">"-preset"</span>, <span class="str">"fast"</span>,
+            <span class="str">"-crf"</span>, <span class="str">"22"</span>,              <span class="cm"># quality: 18=high, 28=low. 22 is good</span>
+            <span class="str">"-c:a"</span>, <span class="str">"aac"</span>,
+            <span class="str">"-b:a"</span>, <span class="str">"192k"</span>,
+            <span class="str">"-movflags"</span>, <span class="str">"+faststart"</span>,  <span class="cm"># web-friendly streaming</span>
+            str(out), <span class="str">"-y"</span>
+        ]
+
+        logger.info(<span class="str">f"  Cutting clip {idx+1}: {moment['start']:.1f}s–{moment['end']:.1f}s"</span>)
+        result = subprocess.run(cmd, capture_output=True)
+        <span class="kw">if</span> result.returncode != <span class="num">0</span>:
+            logger.error(<span class="str">f"FFmpeg error: {result.stderr.decode()[-500:]}"</span>)
+            <span class="kw">continue</span>
+        ctx.output_clips.append(out)
+        logger.info(<span class="str">f"  Saved: {out.name}"</span>)
+
+    <span class="kw">return</span> ctx</div>
+  </div>
+
+  <h2>modules/subtitle_gen.py — Word-Level Captions</h2>
+  <div class="code-wrap">
+    <div class="code-head"><span>💬</span> C:\clipbot\modules\subtitle_gen.py</div>
+    <div class="code-body"><span class="kw">import</span> subprocess, srt
+<span class="kw">from</span> datetime <span class="kw">import</span> timedelta
+<span class="kw">from</span> pathlib <span class="kw">import</span> Path
+<span class="kw">from</span> loguru <span class="kw">import</span> logger
+
+<span class="kw">def</span> <span class="fn">_build_srt</span>(ctx, moment_idx, moment):
+    <span class="str">"""Build word-level SRT with timestamps relative to clip start."""</span>
+    subs, counter = [], <span class="num">1</span>
+    t0 = moment[<span class="str">"start"</span>]   <span class="cm"># clip start time in source video</span>
+
+    <span class="kw">for</span> seg <span class="kw">in</span> ctx.transcript:
+        <span class="kw">if</span> seg[<span class="str">"end"</span>] < moment[<span class="str">"start"</span>] <span class="kw">or</span> seg[<span class="str">"start"</span>] > moment[<span class="str">"end"</span>]:
+            <span class="kw">continue</span>
+
+        <span class="kw">if</span> seg.get(<span class="str">"words"</span>):
+            <span class="cm"># Group into 2-word chunks — TikTok-style karaoke captions</span>
+            words  = seg[<span class="str">"words"</span>]
+            chunks = [words[i:i+<span class="num">2</span>] <span class="kw">for</span> i <span class="kw">in</span> range(<span class="num">0</span>, len(words), <span class="num">2</span>)]
+            <span class="kw">for</span> chunk <span class="kw">in</span> chunks:
+                cs   = max(<span class="num">0</span>, chunk[<span class="num">0</span>][<span class="str">"start"</span>] - t0)
+                ce   = chunk[-<span class="num">1</span>][<span class="str">"end"</span>] - t0
+                text = <span class="str">" "</span>.join(w[<span class="str">"word"</span>].strip().upper() <span class="kw">for</span> w <span class="kw">in</span> chunk)
+                subs.append(srt.Subtitle(
+                    index=counter,
+                    start=timedelta(seconds=cs),
+                    end=timedelta(seconds=max(cs + <span class="num">0.3</span>, ce)),
+                    content=text
+                ))
+                counter += <span class="num">1</span>
+        <span class="kw">else</span>:
+            <span class="cm"># Fallback: full segment as one subtitle line</span>
+            subs.append(srt.Subtitle(
+                index=counter,
+                start=timedelta(seconds=max(<span class="num">0</span>, seg[<span class="str">"start"</span>] - t0)),
+                end=timedelta(seconds=seg[<span class="str">"end"</span>] - t0),
+                content=seg[<span class="str">"text"</span>].upper()
+            ))
+            counter += <span class="num">1</span>
+    <span class="kw">return</span> srt.compose(subs)
+
+
+<span class="kw">def</span> <span class="fn">generate_subtitles</span>(ctx, cfg):
+    <span class="kw">for</span> idx, (moment, clip_path) <span class="kw">in</span> enumerate(zip(ctx.viral_moments, ctx.output_clips)):
+        srt_path = clip_path.with_suffix(<span class="str">".srt"</span>)
+        srt_text = _build_srt(ctx, idx, moment)
+        srt_path.write_text(srt_text, encoding=<span class="str">"utf-8"</span>)
+
+        <span class="cm"># Build subtitle style string for FFmpeg</span>
+        <span class="cm"># PrimaryColour in BGR hex with alpha prefix: &HAABBGGRR</span>
+        style = (
+            <span class="str">f"FontName={cfg.subtitle_font},"</span>
+            <span class="str">f"FontSize={cfg.subtitle_size},"</span>
+            <span class="str">"PrimaryColour=&H00FFFFFF,"</span>   <span class="cm"># white text</span>
+            <span class="str">"OutlineColour=&H00000000,"</span>   <span class="cm"># black outline</span>
+            <span class="str">"BackColour=&H80000000,"</span>     <span class="cm"># semi-transparent shadow</span>
+            <span class="str">"Outline=3,"</span>
+            <span class="str">"Shadow=1,"</span>
+            <span class="str">"Bold=1,"</span>
+            <span class="str">"Alignment=2,"</span>               <span class="cm"># bottom-center</span>
+            <span class="str">"MarginV=120"</span>                <span class="cm"># keep away from bottom edge</span>
+        )
+        <span class="cm"># Escape Windows backslashes for FFmpeg</span>
+        srt_escaped = str(srt_path).replace(<span class="str">"\\"</span>, <span class="str">"/"</span>).replace(<span class="str">":"</span>, <span class="str">"\\:"</span>)
+        vf  = <span class="str">f"subtitles='{srt_escaped}':force_style='{style}'"</span>
+
+        captioned = clip_path.with_stem(clip_path.stem + <span class="str">"_sub"</span>)
+        cmd = [
+            <span class="str">"ffmpeg"</span>, <span class="str">"-i"</span>, str(clip_path),
+            <span class="str">"-vf"</span>, vf,
+            <span class="str">"-c:a"</span>, <span class="str">"copy"</span>,   <span class="cm"># don't re-encode audio</span>
+            str(captioned), <span class="str">"-y"</span>
+        ]
+        result = subprocess.run(cmd, capture_output=True)
+        <span class="kw">if</span> result.returncode == <span class="num">0</span>:
+            clip_path.unlink()
+            captioned.rename(clip_path)
+            srt_path.unlink()
+            logger.info(<span class="str">f"  Subtitles burned: {clip_path.name}"</span>)
+        <span class="kw">else</span>:
+            logger.error(<span class="str">f"Subtitle burn failed: {result.stderr.decode()[-500:]}"</span>)
+    <span class="kw">return</span> ctx</div>
+  </div>
+
+  <h2>modules/dedup_checker.py</h2>
+  <div class="code-wrap">
+    <div class="code-head"><span>🔒</span> C:\clipbot\modules\dedup_checker.py</div>
+    <div class="code-body"><span class="kw">import</span> hashlib, sqlite3
+<span class="kw">from</span> pathlib <span class="kw">import</span> Path
+<span class="kw">from</span> loguru <span class="kw">import</span> logger
+
+<span class="kw">def</span> <span class="fn">_init_db</span>(cfg):
+    cfg.db_path.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(cfg.db_path)
+    conn.execute(<span class="str">"""
+        CREATE TABLE IF NOT EXISTS processed_videos (
+            hash         TEXT PRIMARY KEY,
+            filename     TEXT,
+            processed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            clips_made   INTEGER DEFAULT 0
+        )
+    """</span>)
+    conn.commit(); conn.close()
+
+
+<span class="kw">def</span> <span class="fn">_file_hash</span>(path):
+    <span class="str">"""Fast hash using first + last 2MB (avoids reading full large video files)."""</span>
+    h = hashlib.md5()
+    size = path.stat().st_size
+    <span class="kw">with</span> open(path, <span class="str">"rb"</span>) <span class="kw">as</span> f:
+        h.update(f.read(<span class="num">2</span> * <span class="num">1024</span> * <span class="num">1024</span>))
+        <span class="kw">if</span> size > <span class="num">4</span> * <span class="num">1024</span> * <span class="num">1024</span>:
+            f.seek(-<span class="num">2</span> * <span class="num">1024</span> * <span class="num">1024</span>, <span class="num">2</span>)
+            h.update(f.read(<span class="num">2</span> * <span class="num">1024</span> * <span class="num">1024</span>))
+    <span class="kw">return</span> h.hexdigest()
+
+
+<span class="kw">def</span> <span class="fn">is_duplicate</span>(ctx, cfg) -> bool:
+    _init_db(cfg)
+    h = _file_hash(ctx.video_path)
+    ctx.video_hash = h
+    conn = sqlite3.connect(cfg.db_path)
+    row  = conn.execute(<span class="str">"SELECT 1 FROM processed_videos WHERE hash=?"</span>, (h,)).fetchone()
+    conn.close()
+    <span class="kw">if</span> row:
+        logger.warning(<span class="str">f"Duplicate detected: {ctx.video_path.name} (hash={h[:8]}...)"</span>)
+    <span class="kw">return</span> row <span class="kw">is not None</span>
+
+
+<span class="kw">def</span> <span class="fn">mark_processed</span>(ctx, cfg):
+    conn = sqlite3.connect(cfg.db_path)
+    conn.execute(
+        <span class="str">"INSERT OR IGNORE INTO processed_videos (hash, filename, clips_made) VALUES (?,?,?)"</span>,
+        (ctx.video_hash, ctx.video_path.name, len(ctx.output_clips))
+    )
+    conn.commit(); conn.close()
+    logger.info(<span class="str">f"Marked as processed in DB: {ctx.video_path.name}"</span>)</div>
+  </div>
+
+  <h2>Running the Pipeline</h2>
+  <div class="cmd"><span class="cm"># Always activate venv first</span>
+cd C:\clipbot
+venv\Scripts\activate
+
+<span class="cm"># Process a single video (extracts top 3 clips)</span>
+python main.py input\my_podcast.mp4
+
+<span class="cm"># Extract top 5 clips instead</span>
+python main.py input\my_podcast.mp4 --clips 5
+
+<span class="cm"># Force reprocess even if in dedup database</span>
+python main.py input\my_podcast.mp4 --skip-dedup
+
+<span class="cm"># Batch process all videos in the input folder</span>
+for %f in (input\*.mp4) do python main.py "%f"
+
+<span class="cm"># Save as run_all.bat for easy double-click execution:</span>
+<span class="cm"># --- Contents of run_all.bat ---</span>
+<span class="cm"># @echo off</span>
+<span class="cm"># cd C:\clipbot</span>
+<span class="cm"># call venv\Scripts\activate</span>
+<span class="cm"># for /R input\ %%f in (*.mp4 *.mov *.mkv) do python main.py "%%f"</span>
+<span class="cm"># pause</span></div>
+
+  <div class="alert alert-ok">Your output clips will appear in <strong>C:\clipbot\output\</strong> named <code>videoname_clip01.mp4</code>, <code>_clip02.mp4</code>, etc. Each is 1080×1920 with burned-in captions, ready to upload directly to TikTok.</div>
+</div>
+
+<!-- ═══════════════ AI MODELS ═══════════════ -->
+<div class="page" id="ai">
+  <p class="intro">Which AI models to use for each task — recommended configurations for free and paid setups.</p>
+
+  <h2>Transcription Models</h2>
+  <table>
+    <thead><tr><th>Model</th><th>Size</th><th>Speed (no GPU)</th><th>Accuracy</th><th>Cost</th></tr></thead>
+    <tbody>
+      <tr><td>faster-whisper tiny</td><td>39 MB</td><td>Realtime (1x)</td><td>Good</td><td class="free-v">Free</td></tr>
+      <tr><td>faster-whisper base</td><td>74 MB</td><td>Very fast</td><td>Good+</td><td class="free-v">Free</td></tr>
+      <tr><td>faster-whisper small</td><td>244 MB</td><td>Fast</td><td>Great</td><td class="free-v">Free</td></tr>
+      <tr><td><strong>faster-whisper medium</strong></td><td>769 MB</td><td>3-5x realtime</td><td>Excellent ★</td><td class="free-v">Free</td></tr>
+      <tr><td>faster-whisper large-v3</td><td>3 GB</td><td>1-2x realtime</td><td>Best</td><td class="free-v">Free (needs 10GB VRAM or slow CPU)</td></tr>
+      <tr><td>AssemblyAI cloud</td><td>Cloud</td><td>Fast (parallel)</td><td>Excellent</td><td class="paid-v">$0.65/hr audio</td></tr>
+    </tbody>
+  </table>
+  <div class="alert alert-info"><strong>Recommendation:</strong> Start with <strong>medium</strong>. Only upgrade to large-v3 if you have a GPU with 10GB+ VRAM.</div>
+
+  <h2>Viral Moment Detection Models</h2>
+  <table>
+    <thead><tr><th>Signal</th><th>Model/Tool</th><th>What It Detects</th><th>Cost</th></tr></thead>
+    <tbody>
+      <tr><td>Audio energy</td><td>librosa RMS</td><td>Loud moments, cheers, applause, energy spikes</td><td class="free-v">Free</td></tr>
+      <tr><td>Sentiment/emotion</td><td>cardiffnlp/twitter-roberta</td><td>Emotional intensity in transcript text</td><td class="free-v">Free (~500MB download)</td></tr>
+      <tr><td>LLM scoring (local)</td><td>Ollama + LLaMA 3.1 8B</td><td>Hooks, humor, surprise, relatability</td><td class="free-v">Free (slow without GPU)</td></tr>
+      <tr><td>LLM scoring (cloud)</td><td>GPT-4o-mini</td><td>Same as above, much better quality</td><td class="paid-v">~$0.001 per clip</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Setting Up Ollama (Free GPT Alternative)</h3>
+  <div class="cmd"><span class="cm"># 1. Download installer from ollama.com (Windows .exe available)</span>
+<span class="cm"># 2. Run installer — creates a background service</span>
+<span class="cm"># 3. Pull the model (downloads ~4.7GB for LLaMA 3.1 8B)</span>
+ollama pull llama3.1:8b
+
+<span class="cm"># Verify it's running</span>
+ollama list
+<span class="cm"># Should show: llama3.1:8b</span>
+
+<span class="cm"># In your .env file, set:</span>
+<span class="cm"># USE_LOCAL_LLM=true</span>
+<span class="cm"># OPENAI_API_KEY=  (leave blank)</span></div>
+
+  <h2>Face Detection Models</h2>
+  <table>
+    <thead><tr><th>Tool</th><th>Best For</th><th>Speed</th><th>Cost</th></tr></thead>
+    <tbody>
+      <tr><td>MediaPipe Face Detection (model 0)</td><td>Close-up talking heads</td><td>Very fast</td><td class="free-v">Free</td></tr>
+      <tr><td>MediaPipe Face Detection (model 1)</td><td>Full body shots, multiple people</td><td>Fast</td><td class="free-v">Free</td></tr>
+      <tr><td>YOLO v8n (ultralytics)</td><td>Most accurate person detection</td><td>Fast with GPU</td><td class="free-v">Free</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Content Analysis Models (Optional Upgrades)</h2>
+  <ul class="cl">
+    <li><strong>facebook/bart-large-cnn</strong> — generate a clip title and description automatically. Free, local. <code>pip install transformers</code></li>
+    <li><strong>openai/clip-vit-large-patch14</strong> — match visual thumbnails to trending topics. Free, local.</li>
+    <li><strong>pyannote/speaker-diarization-3.1</strong> — identify exactly who is speaking (great for multi-person podcasts). Free with HuggingFace account. <code>pip install pyannote.audio</code></li>
+    <li><strong>distilbert-base-uncased</strong> — topic classification of clips. Free, local.</li>
+  </ul>
+</div>
+
+<!-- ═══════════════ DEDUP + SCALE ═══════════════ -->
+<div class="page" id="dedup">
+  <p class="intro">Prevent duplicates and handle high-volume processing efficiently.</p>
+
+  <h2>Level 1 — Video-Level Deduplication</h2>
+  <p>The <strong>dedup_checker.py</strong> module already handles this. It computes a fast MD5 hash of the first and last 2MB of each video file (avoids reading the entire file), stores it in SQLite, and skips reprocessing if the hash exists.</p>
+
+  <h2>Level 2 — Clip-Level Visual Deduplication</h2>
+  <p>Prevents visually identical clips (same scene, similar content) from being output across multiple source videos.</p>
+  <div class="code-wrap">
+    <div class="code-head"><span>🖼</span> Add to modules/dedup_checker.py</div>
+    <div class="code-body"><span class="kw">import</span> imagehash, subprocess, json
+<span class="kw">from</span> PIL <span class="kw">import</span> Image
+
+<span class="kw">def</span> <span class="fn">clip_phash</span>(clip_path):
+    <span class="str">"""Extract mid-frame thumbnail and compute perceptual hash."""</span>
+    thumb_path = str(clip_path) + <span class="str">"_thumb.jpg"</span>
+    <span class="cm"># Get duration via ffprobe</span>
+    info = json.loads(subprocess.run([
+        <span class="str">"ffprobe"</span>, <span class="str">"-v"</span>, <span class="str">"quiet"</span>, <span class="str">"-print_format"</span>, <span class="str">"json"</span>,
+        <span class="str">"-show_format"</span>, str(clip_path)
+    ], capture_output=True, text=True).stdout)
+    dur = float(info[<span class="str">"format"</span>][<span class="str">"duration"</span>])
+    mid = dur / <span class="num">2</span>
+
+    <span class="cm"># Extract single frame at midpoint</span>
+    subprocess.run([
+        <span class="str">"ffmpeg"</span>, <span class="str">"-ss"</span>, str(mid), <span class="str">"-i"</span>, str(clip_path),
+        <span class="str">"-frames:v"</span>, <span class="str">"1"</span>, <span class="str">"-q:v"</span>, <span class="str">"5"</span>, thumb_path, <span class="str">"-y"</span>
+    ], capture_output=True)
+
+    h = imagehash.phash(Image.open(thumb_path))
+    Path(thumb_path).unlink(missing_ok=True)
+    <span class="kw">return</span> h
+
+
+<span class="kw">def</span> <span class="fn">is_visually_duplicate</span>(clip_path, cfg, threshold=<span class="num">8</span>) -> bool:
+    <span class="str">"""
+    Returns True if this clip looks visually similar to a previously output clip.
+    threshold: 0=identical, higher=more tolerant. 8 is a good default.
+    """</span>
+    h = clip_phash(clip_path)
+    conn = sqlite3.connect(cfg.db_path)
+    conn.execute(<span class="str">"""
+        CREATE TABLE IF NOT EXISTS clip_hashes (
+            phash TEXT, clip_name TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )"""</span>)
+    existing = [row[<span class="num">0</span>] <span class="kw">for</span> row <span class="kw">in</span> conn.execute(<span class="str">"SELECT phash FROM clip_hashes"</span>).fetchall()]
+    is_dup   = <span class="kw">any</span>(abs(h - imagehash.hex_to_hash(eh)) <= threshold <span class="kw">for</span> eh <span class="kw">in</span> existing)
+    <span class="kw">if not</span> is_dup:
+        conn.execute(<span class="str">"INSERT INTO clip_hashes (phash, clip_name) VALUES (?,?)"</span>,
+                     (str(h), clip_path.name))
+    conn.commit(); conn.close()
+    <span class="kw">return</span> is_dup</div>
+  </div>
+
+  <h2>Scaling: Automatic Watching with Task Scheduler</h2>
+  <p>Set up Windows Task Scheduler to automatically run the pipeline whenever new videos appear.</p>
+  <div class="code-wrap">
+    <div class="code-head"><span>📄</span> C:\clipbot\run_watch.bat — Save this file, then schedule it</div>
+    <div class="code-body">@echo off
+cd C:\clipbot
+call venv\Scripts\activate
+echo [%DATE% %TIME%] Starting batch run >> logs\scheduler.log
+for /R input\ %%f in (*.mp4 *.mov *.mkv *.avi *.webm) do (
+    echo Processing: %%f >> logs\scheduler.log
+    python main.py "%%f" >> logs\scheduler.log 2>&1
+)
+echo [%DATE% %TIME%] Batch complete >> logs\scheduler.log</div>
+  </div>
+  <div class="cmd"><span class="cm"># To set up in Task Scheduler:</span>
+<span class="cm"># 1. Press Win+R → taskschd.msc → Enter</span>
+<span class="cm"># 2. Action → Create Basic Task</span>
+<span class="cm"># 3. Name: "ClipBot Pipeline"</span>
+<span class="cm"># 4. Trigger: Daily → Repeat task every 1 hour</span>
+<span class="cm"># 5. Action: Start a program → C:\clipbot\run_watch.bat</span>
+<span class="cm"># 6. Settings: "Run whether user is logged on or not"</span>
+<span class="cm"># 7. Check "Run with highest privileges"</span></div>
+
+  <h2>Scaling to 100+ Videos Per Day (Celery + Redis)</h2>
+  <div class="cmd"><span class="cm"># Install Redis for Windows (via Docker)</span>
+winget install Docker.DockerDesktop
+docker pull redis:latest
+docker run -d --name clipbot-redis -p 6379:6379 redis:latest
+
+<span class="cm"># Install Celery</span>
+pip install celery redis</div>
+
+  <div class="code-wrap">
+    <div class="code-head"><span>🐍</span> C:\clipbot\tasks.py — Celery task definitions</div>
+    <div class="code-body"><span class="kw">from</span> celery <span class="kw">import</span> Celery
+<span class="kw">from</span> config <span class="kw">import</span> Config, JobContext
+<span class="kw">from</span> pathlib <span class="kw">import</span> Path
+
+app = Celery(<span class="str">"clipbot"</span>, broker=<span class="str">"redis://localhost:6379/0"</span>,
+             backend=<span class="str">"redis://localhost:6379/1"</span>)
+
+<span class="kw">@app</span>.task(bind=True, max_retries=<span class="num">2</span>)
+<span class="kw">def</span> <span class="fn">process_video</span>(self, video_path_str):
+    <span class="str">"""Single video processing task. Submit many of these in parallel."""</span>
+    <span class="kw">from</span> main <span class="kw">import</span> extract_audio, cleanup_temp
+    <span class="kw">from</span> modules.transcriber   <span class="kw">import</span> transcribe
+    <span class="kw">from</span> modules.viral_detector <span class="kw">import</span> detect_viral_moments
+    <span class="kw">from</span> modules.face_tracker   <span class="kw">import</span> track_faces
+    <span class="kw">from</span> modules.clip_cutter    <span class="kw">import</span> cut_clips
+    <span class="kw">from</span> modules.subtitle_gen   <span class="kw">import</span> generate_subtitles
+    <span class="kw">from</span> modules.dedup_checker  <span class="kw">import</span> is_duplicate, mark_processed
+
+    cfg = Config()
+    ctx = JobContext(video_path=Path(video_path_str))
+    <span class="kw">if</span> is_duplicate(ctx, cfg): <span class="kw">return</span> <span class="str">"SKIP_DUPLICATE"</span>
+
+    ctx = extract_audio(ctx, cfg)
+    ctx = transcribe(ctx, cfg)
+    ctx = detect_viral_moments(ctx, cfg)
+    ctx = track_faces(ctx, cfg)
+    ctx = cut_clips(ctx, cfg)
+    ctx = generate_subtitles(ctx, cfg)
+    mark_processed(ctx, cfg)
+    cleanup_temp(ctx, cfg)
+    <span class="kw">return</span> [str(p) <span class="kw">for</span> p <span class="kw">in</span> ctx.output_clips]</div>
+  </div>
+  <div class="cmd"><span class="cm"># Start a Celery worker (run this in a separate Command Prompt)</span>
+cd C:\clipbot
+venv\Scripts\activate
+celery -A tasks worker --concurrency=2 --loglevel=info -Q video_jobs
+
+<span class="cm"># Submit jobs from Python</span>
+python -c "from tasks import process_video; process_video.delay('input/myvideo.mp4')"
+
+<span class="cm"># Or submit a whole folder</span>
+python -c "
+from tasks import process_video
+from pathlib import Path
+for f in Path('input').rglob('*.mp4'):
+    process_video.delay(str(f))
+    print(f'Queued: {f.name}')
+"</div>
+
+  <h2>Scaling Recommendations</h2>
+  <table>
+    <thead><tr><th>Volume</th><th>Setup</th><th>Transcription Speed</th><th>Est. Cost/day</th></tr></thead>
+    <tbody>
+      <tr><td>1–10 videos/day</td><td>Single PC, CPU, Whisper medium</td><td>~15min per hour of audio</td><td class="free-v">$0</td></tr>
+      <tr><td>10–50 videos/day</td><td>Single PC + NVIDIA GPU (3060 or better)</td><td>~2min per hour of audio</td><td class="free-v">$0 (+ GPU hardware cost)</td></tr>
+      <tr><td>50–200 videos/day</td><td>Celery + 3 worker machines</td><td>Parallel, 3x throughput</td><td class="free-v">$0 (owned hardware)</td></tr>
+      <tr><td>200+ videos/day</td><td>Cloud VMs (AWS g4dn.xlarge) + Redis</td><td>~1min per hour of audio</td><td class="paid-v">~$0.50–2 per hour cloud runtime</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ═══════════════ COSTS ═══════════════ -->
+<div class="page" id="costs">
+  <p class="intro">Exact cost estimates for every configuration. All prices current as of 2025.</p>
+
+  <h2>Option 1 — 100% Free Stack</h2>
+  <p>Recommended for getting started. Zero ongoing cost. Runs entirely on your own machine.</p>
+  <table>
+    <thead><tr><th>Component</th><th>Tool</th><th>Per 100 Videos</th></tr></thead>
+    <tbody>
+      <tr><td>Transcription</td><td>faster-whisper medium (local)</td><td class="free-v">$0</td></tr>
+      <tr><td>Viral scoring (audio)</td><td>librosa (local)</td><td class="free-v">$0</td></tr>
+      <tr><td>Viral scoring (NLP)</td><td>cardiffnlp/roberta (local)</td><td class="free-v">$0</td></tr>
+      <tr><td>Viral scoring (LLM)</td><td>Ollama + LLaMA 3.1 8B (local)</td><td class="free-v">$0</td></tr>
+      <tr><td>Face tracking</td><td>MediaPipe (local)</td><td class="free-v">$0</td></tr>
+      <tr><td>Video processing</td><td>FFmpeg (local)</td><td class="free-v">$0</td></tr>
+      <tr><td>Subtitles</td><td>Whisper word timestamps + FFmpeg</td><td class="free-v">$0</td></tr>
+      <tr><td>Deduplication</td><td>SQLite + imagehash (local)</td><td class="free-v">$0</td></tr>
+      <tr><td><strong>TOTAL</strong></td><td></td><td class="free-v"><strong>$0.00</strong></td></tr>
+    </tbody>
+  </table>
+  <div class="alert alert-warn">Limitation: Ollama LLaMA scoring is much slower than GPT-4o-mini without a GPU. On CPU it can take 30–60s per scoring call. You can disable LLM scoring entirely by setting <code>llm_score_weight=0</code> in config.py and redistributing to audio and sentiment.</div>
+
+  <h2>Option 2 — Enhanced Stack (Recommended)</h2>
+  <p>Add GPT-4o-mini for dramatically better viral moment selection quality.</p>
+  <table>
+    <thead><tr><th>Component</th><th>Tool</th><th>Per 100 Videos (30 min avg)</th></tr></thead>
+    <tbody>
+      <tr><td>Transcription</td><td>faster-whisper (local)</td><td class="free-v">$0</td></tr>
+      <tr><td>LLM viral scoring</td><td>GPT-4o-mini API (~3 windows × 500 tokens)</td><td class="paid-v">~$0.10</td></tr>
+      <tr><td>Everything else</td><td>Local tools</td><td class="free-v">$0</td></tr>
+      <tr><td><strong>TOTAL</strong></td><td></td><td class="paid-v"><strong>~$0.10 per 100 videos</strong></td></tr>
+    </tbody>
+  </table>
+
+  <h2>Option 3 — Full Cloud Stack</h2>
+  <p>Maximum quality and speed, but ongoing API costs.</p>
+  <table>
+    <thead><tr><th>Component</th><th>Tool</th><th>Per 100 Videos (30 min avg)</th></tr></thead>
+    <tbody>
+      <tr><td>Transcription</td><td>AssemblyAI ($0.65/hr)</td><td class="paid-v">$32.50</td></tr>
+      <tr><td>LLM scoring</td><td>GPT-4o (full, not mini)</td><td class="paid-v">~$5.00</td></tr>
+      <tr><td>Cloud compute</td><td>AWS g4dn.xlarge ($0.526/hr)</td><td class="paid-v">~$5.00 for 10hr processing</td></tr>
+      <tr><td><strong>TOTAL</strong></td><td></td><td class="paid-v"><strong>~$42 per 100 videos</strong></td></tr>
+    </tbody>
+  </table>
+
+  <h2>One-Time Hardware Recommendations</h2>
+  <table>
+    <thead><tr><th>Hardware</th><th>Impact</th><th>Cost</th></tr></thead>
+    <tbody>
+      <tr><td>No GPU (CPU only)</td><td>Works fine. Whisper medium ≈ 15 min/hr audio. LLaMA ≈ 60s/query.</td><td class="free-v">$0 extra</td></tr>
+      <tr><td>NVIDIA RTX 3060 (8GB VRAM)</td><td>10x faster Whisper. Whisper large-v3 usable. LLaMA 8B fast.</td><td class="paid-v">~$250 used / $320 new</td></tr>
+      <tr><td>NVIDIA RTX 3080 (10GB VRAM)</td><td>Run everything at maximum quality simultaneously.</td><td class="paid-v">~$400 used / $700 new</td></tr>
+      <tr><td>NVIDIA RTX 4090 (24GB VRAM)</td><td>Run LLaMA 70B locally. Process multiple videos in parallel.</td><td class="paid-v">~$1,600 new</td></tr>
+    </tbody>
+  </table>
+
+  <div class="alert alert-ok"><strong>Best value recommendation:</strong> Run fully free to start. If viral clip quality is good, keep running free. If you want better LLM scoring quality, add only the GPT-4o-mini API key — at $0.001/clip it's basically free for most use cases. A used RTX 3060 is worth it if you're processing 20+ videos daily.</div>
+</div>
+
+<!-- ═══════════════ WORKFLOW DIAGRAM ═══════════════ -->
+<div class="page" id="workflow">
+  <p class="intro">Visual map of every component and how data flows between them.</p>
+
+  <h2>Full Pipeline Architecture</h2>
+  <div class="svg-wrap">
+    <svg width="100%" viewBox="0 0 700 900" role="img" style="max-width:700px;display:block;margin:0 auto">
+      <title>TikTok Clip Pipeline — Architecture Diagram</title>
+      <desc>Six-stage pipeline from source video to TikTok-ready clip, showing all modules and data flows.</desc>
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M1 1L9 5L1 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+
+      <!-- ── Stage labels (left) ── -->
+      <text x="28" y="108" font-size="11" fill="#aaa" font-family="system-ui" text-anchor="middle">0</text>
+      <text x="28" y="215" font-size="11" fill="#aaa" font-family="system-ui" text-anchor="middle">1</text>
+      <text x="28" y="330" font-size="11" fill="#aaa" font-family="system-ui" text-anchor="middle">2</text>
+      <text x="28" y="460" font-size="11" fill="#aaa" font-family="system-ui" text-anchor="middle">3</text>
+      <text x="28" y="580" font-size="11" fill="#aaa" font-family="system-ui" text-anchor="middle">4</text>
+      <text x="28" y="690" font-size="11" fill="#aaa" font-family="system-ui" text-anchor="middle">5</text>
+      <text x="28" y="805" font-size="12" fill="#22c55e" font-family="system-ui" text-anchor="middle" font-weight="600">✓</text>
+
+      <!-- ── INPUT ── -->
+      <rect x="220" y="20" width="220" height="48" rx="10" fill="#e2e8f0" stroke="#cbd5e1" stroke-width="0.5"/>
+      <text x="330" y="40" font-size="14" font-weight="600" fill="#1e293b" font-family="system-ui" text-anchor="middle">Source video</text>
+      <text x="330" y="57" font-size="12" fill="#64748b" font-family="system-ui" text-anchor="middle">mp4 / mov / mkv / webm</text>
+
+      <!-- INPUT → DEDUP -->
+      <line x1="330" y1="68" x2="330" y2="84" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- ── STAGE 0: DEDUP ── -->
+      <rect x="205" y="84" width="250" height="52" rx="10" fill="#f3e8ff" stroke="#c084fc" stroke-width="1"/>
+      <text x="330" y="106" font-size="14" font-weight="600" fill="#7e22ce" font-family="system-ui" text-anchor="middle">Dedup checker</text>
+      <text x="330" y="122" font-size="12" fill="#9333ea" font-family="system-ui" text-anchor="middle">SQLite hash lookup → skip if seen</text>
+      <!-- dedup skip arrow -->
+      <path d="M455 110 L540 110 L540 44 L440 44" fill="none" stroke="#c084fc" stroke-width="0.75" stroke-dasharray="4 3" marker-end="url(#arr)"/>
+      <text x="548" y="80" font-size="11" fill="#9333ea" font-family="system-ui">skip if</text>
+      <text x="548" y="93" font-size="11" fill="#9333ea" font-family="system-ui">duplicate</text>
+
+      <!-- DEDUP → AUDIO EXTRACT and FRAME SAMPLER -->
+      <path d="M330 136 L330 152 L165 152 L165 180" fill="none" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+      <path d="M330 136 L330 180" fill="none" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- ── STAGE 1: AUDIO EXTRACT + FRAME SAMPLE ── -->
+      <rect x="70" y="180" width="185" height="52" rx="10" fill="#ccfbf1" stroke="#2dd4bf" stroke-width="1"/>
+      <text x="162" y="202" font-size="14" font-weight="600" fill="#115e59" font-family="system-ui" text-anchor="middle">Audio extract</text>
+      <text x="162" y="218" font-size="12" fill="#0f766e" font-family="system-ui" text-anchor="middle">FFmpeg → WAV 16kHz mono</text>
+
+      <rect x="280" y="180" width="185" height="52" rx="10" fill="#ccfbf1" stroke="#2dd4bf" stroke-width="1"/>
+      <text x="372" y="202" font-size="14" font-weight="600" fill="#115e59" font-family="system-ui" text-anchor="middle">Frame sampler</text>
+      <text x="372" y="218" font-size="12" fill="#0f766e" font-family="system-ui" text-anchor="middle">1 frame per 2 seconds</text>
+
+      <!-- STAGE 1 arrows down -->
+      <line x1="162" y1="232" x2="162" y2="298" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+      <line x1="372" y1="232" x2="372" y2="298" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- ── STAGE 2: TRANSCRIBE + FACE TRACK ── -->
+      <rect x="70" y="298" width="185" height="60" rx="10" fill="#dbeafe" stroke="#60a5fa" stroke-width="1"/>
+      <text x="162" y="320" font-size="14" font-weight="600" fill="#1e40af" font-family="system-ui" text-anchor="middle">Transcription</text>
+      <text x="162" y="336" font-size="12" fill="#1d4ed8" font-family="system-ui" text-anchor="middle">faster-whisper (local)</text>
+      <text x="162" y="350" font-size="12" fill="#1d4ed8" font-family="system-ui" text-anchor="middle">word-level timestamps</text>
+
+      <rect x="280" y="298" width="185" height="60" rx="10" fill="#dbeafe" stroke="#60a5fa" stroke-width="1"/>
+      <text x="372" y="320" font-size="14" font-weight="600" fill="#1e40af" font-family="system-ui" text-anchor="middle">Face tracking</text>
+      <text x="372" y="336" font-size="12" fill="#1d4ed8" font-family="system-ui" text-anchor="middle">MediaPipe detection</text>
+      <text x="372" y="350" font-size="12" fill="#1d4ed8" font-family="system-ui" text-anchor="middle">compute 9:16 crop box</text>
+
+      <!-- STAGE 2 converge to VIRAL SCORER -->
+      <path d="M162 358 L162 410 L205 410" fill="none" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+      <path d="M372 358 L372 410 L455 410" fill="none" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- ── STAGE 3: VIRAL SCORER ── -->
+      <rect x="205" y="388" width="250" height="64" rx="10" fill="#fee2e2" stroke="#f87171" stroke-width="1"/>
+      <text x="330" y="412" font-size="14" font-weight="600" fill="#991b1b" font-family="system-ui" text-anchor="middle">Viral moment scorer</text>
+      <text x="330" y="428" font-size="12" fill="#b91c1c" font-family="system-ui" text-anchor="middle">audio energy + sentiment + LLM</text>
+      <text x="330" y="442" font-size="12" fill="#b91c1c" font-family="system-ui" text-anchor="middle">→ top N non-overlapping clips</text>
+
+      <!-- Optional LLM side -->
+      <rect x="490" y="398" width="150" height="44" rx="10" fill="#fef3c7" stroke="#f59e0b" stroke-width="0.75"/>
+      <text x="565" y="416" font-size="13" font-weight="600" fill="#92400e" font-family="system-ui" text-anchor="middle">GPT-4o-mini</text>
+      <text x="565" y="431" font-size="11" fill="#b45309" font-family="system-ui" text-anchor="middle">or Ollama (free)</text>
+      <line x1="490" y1="420" x2="455" y2="420" stroke="#f59e0b" stroke-width="1" stroke-dasharray="4 3" marker-end="url(#arr)"/>
+
+      <!-- SCORER → CLIP CUTTER -->
+      <line x1="330" y1="452" x2="330" y2="510" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- ── STAGE 4: CLIP CUTTER ── -->
+      <rect x="205" y="510" width="250" height="52" rx="10" fill="#fee2e2" stroke="#f87171" stroke-width="1"/>
+      <text x="330" y="532" font-size="14" font-weight="600" fill="#991b1b" font-family="system-ui" text-anchor="middle">Clip cutter</text>
+      <text x="330" y="548" font-size="12" fill="#b91c1c" font-family="system-ui" text-anchor="middle">FFmpeg: crop, encode, 1080×1920</text>
+
+      <!-- CLIP CUTTER → SUBTITLE -->
+      <line x1="330" y1="562" x2="330" y2="620" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- ── STAGE 5: SUBTITLES ── -->
+      <rect x="205" y="620" width="250" height="60" rx="10" fill="#ccfbf1" stroke="#2dd4bf" stroke-width="1"/>
+      <text x="330" y="642" font-size="14" font-weight="600" fill="#115e59" font-family="system-ui" text-anchor="middle">Subtitle generator</text>
+      <text x="330" y="658" font-size="12" fill="#0f766e" font-family="system-ui" text-anchor="middle">Whisper word timestamps → SRT</text>
+      <text x="330" y="672" font-size="12" fill="#0f766e" font-family="system-ui" text-anchor="middle">FFmpeg burn (bold, centered)</text>
+
+      <!-- SUBTITLE → OUTPUT -->
+      <line x1="330" y1="680" x2="330" y2="740" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+
+      <!-- ── OUTPUT ── -->
+      <rect x="185" y="740" width="290" height="64" rx="10" fill="#dcfce7" stroke="#4ade80" stroke-width="1.5"/>
+      <text x="330" y="762" font-size="15" font-weight="700" fill="#14532d" font-family="system-ui" text-anchor="middle">TikTok-ready clips</text>
+      <text x="330" y="778" font-size="12" fill="#166534" font-family="system-ui" text-anchor="middle">1080×1920 MP4 · captions burned</text>
+      <text x="330" y="793" font-size="12" fill="#166534" font-family="system-ui" text-anchor="middle">face-centered · output\ folder</text>
+
+      <!-- DB feedback loop -->
+      <path d="M330 804 L330 838 L620 838 L620 110 L455 110" fill="none" stroke="#c084fc" stroke-width="0.75" stroke-dasharray="5 4" marker-end="url(#arr)"/>
+      <text x="636" y="490" font-size="11" fill="#9333ea" font-family="system-ui" transform="rotate(90,636,490)">mark done in DB</text>
+
+      <!-- JobContext label -->
+      <rect x="50" y="830" width="200" height="30" rx="6" fill="#f8fafc" stroke="#e2e8f0" stroke-width="0.5"/>
+      <text x="150" y="849" font-size="11" fill="#64748b" font-family="system-ui" text-anchor="middle">All stages share: JobContext object</text>
+    </svg>
+  </div>
+
+  <h2>Data Flow Summary</h2>
+  <table>
+    <thead><tr><th>Stage</th><th>Module</th><th>Input from ctx</th><th>Writes to ctx</th></tr></thead>
+    <tbody>
+      <tr><td>0 — Dedup</td><td>dedup_checker.py</td><td>video_path</td><td>video_hash</td></tr>
+      <tr><td>1 — Audio extract</td><td>main.py (inline)</td><td>video_path</td><td>audio_path</td></tr>
+      <tr><td>2 — Transcribe</td><td>transcriber.py</td><td>audio_path</td><td>transcript[]</td></tr>
+      <tr><td>3 — Viral score</td><td>viral_detector.py</td><td>transcript + audio_path</td><td>viral_moments[]</td></tr>
+      <tr><td>3b — Face track</td><td>face_tracker.py</td><td>video_path + viral_moments</td><td>face_regions{}</td></tr>
+      <tr><td>4 — Cut clips</td><td>clip_cutter.py</td><td>viral_moments + face_regions</td><td>output_clips[]</td></tr>
+      <tr><td>5 — Subtitles</td><td>subtitle_gen.py</td><td>transcript + output_clips + viral_moments</td><td>(overwrites clips in-place)</td></tr>
+    </tbody>
+  </table>
+
+  <h2>What Each Signal Detects</h2>
+  <table>
+    <thead><tr><th>Signal</th><th>Formula</th><th>Catches</th></tr></thead>
+    <tbody>
+      <tr><td>Audio energy (35%)</td><td>log-normalized RMS amplitude</td><td>Applause, laughter, yelling, musical climaxes</td></tr>
+      <tr><td>Sentiment intensity (30%)</td><td>max(positive_score, negative_score)</td><td>Emotional reactions, heated debates, joy, outrage</td></tr>
+      <tr><td>LLM viral score (35%)</td><td>GPT-4o-mini / LLaMA prompt</td><td>Hooks, surprising facts, humor, relatable moments, storytelling peaks</td></tr>
+    </tbody>
+  </table>
+
+  <div class="alert alert-info">You can tune the three weights in <strong>config.py</strong> to match your content type. For music content, raise <code>audio_energy_weight</code>. For interviews, raise <code>llm_score_weight</code>. For news/debate content, raise <code>sentiment_weight</code>. The three weights must always sum to 1.0.</div>
+</div>
+
+<script>
+function go(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('#mainnav button').forEach(b => b.classList.remove('active'));
+  if (btn) {
+    btn.classList.add('active');
+  } else {
+    const allBtns = document.querySelectorAll('#mainnav button');
+    const labels = ['overview','install','tools','structure','pipeline','ai','dedup','costs','workflow'];
+    const idx = labels.indexOf(id);
+    if (idx >= 0) allBtns[idx].classList.add('active');
+  }
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
