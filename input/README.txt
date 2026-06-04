@@ -1,0 +1,1 @@
+delete readme and paste the downloaded mrbeast video from YouTube here is the url : https://www.youtube.com/watch?v=zRtGL0-5rg4&t=2405s
